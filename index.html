@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEMO CASE — Simulador Financeiro v4.0</title>
+  <meta name="description" content="Simulador financeiro para kiosk de capinhas personalizadas MemoCase com comissão escalonada">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    
+    :root {
+      --bg-primary: #030712;
+      --bg-secondary: #0f172a;
+      --bg-card: #111827;
+      --bg-input: #1e293b;
+      --border: #1e293b;
+      --border-focus: #f59e0b;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-gold: #f59e0b;
+      --accent-gold-soft: rgba(245, 158, 11, 0.15);
+      --accent-green: #22c55e;
+      --accent-green-soft: rgba(34, 197, 94, 0.15);
+      --accent-blue: #3b82f6;
+      --accent-blue-soft: rgba(59, 130, 246, 0.15);
+      --accent-orange: #f97316;
+      --accent-orange-soft: rgba(249, 115, 22, 0.15);
+      --accent-red: #ef4444;
+      --accent-red-soft: rgba(239, 68, 68, 0.15);
+      --accent-purple: #a855f7;
+      --accent-purple-soft: rgba(168, 85, 247, 0.15);
+      --accent-cyan: #06b6d4;
+      --accent-cyan-soft: rgba(6, 182, 212, 0.15);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+      font-size: 14px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px 16px 60px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      background: linear-gradient(135deg, #fff 0%, var(--accent-gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle { color: var(--text-secondary); font-size: 15px; margin-top: 4px; }
+    
+    .version {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 4px 12px;
+      background: var(--accent-green-soft);
+      color: var(--accent-green);
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .main-grid {
+      display: grid;
+      gap: 20px;
+    }
+
+    @media (min-width: 1024px) {
+      .main-grid { grid-template-columns: 1fr 1fr 1fr; }
+    }
+
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .main-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .icon-green { background: var(--accent-green-soft); }
+    .icon-orange { background: var(--accent-orange-soft); }
+    .icon-blue { background: var(--accent-blue-soft); }
+    .icon-cyan { background: var(--accent-cyan-soft); }
+    .icon-gold { background: var(--accent-gold-soft); }
+    .icon-purple { background: var(--accent-purple-soft); }
+    .icon-red { background: var(--accent-red-soft); }
+
+    .card-title { font-size: 15px; font-weight: 600; }
+    .card-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+    .section-title {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 16px 0 10px;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .form-grid-3 { grid-template-columns: repeat(3, 1fr); }
+
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+
+    .form-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .input-wrap { position: relative; }
+
+    .input-prefix, .input-suffix {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 12px;
+      pointer-events: none;
+    }
+
+    .input-prefix { left: 10px; }
+    .input-suffix { right: 10px; }
+
+    input[type="number"] {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--text-primary);
+      font-size: 14px;
+      font-family: inherit;
+      font-weight: 500;
+      transition: border-color 0.2s;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: var(--accent-gold);
+    }
+
+    input.has-prefix { padding-left: 28px; }
+    input.has-suffix { padding-right: 55px; }
+
+    input::-webkit-inner-spin-button,
+    input::-webkit-outer-spin-button { -webkit-appearance: none; }
+    input[type="number"] { -moz-appearance: textfield; }
+
+    .info-box {
+      background: var(--bg-secondary);
+      border-radius: 10px;
+      padding: 12px;
+      margin-top: 12px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .info-row:last-child { border-bottom: none; }
+    .info-label { color: var(--text-muted); }
+    .info-value { color: var(--text-primary); font-weight: 500; }
+
+    .comissao-box {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, var(--bg-input) 100%);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .comissao-title {
+      font-size: 10px;
+      color: var(--accent-purple);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .comissao-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      font-size: 13px;
+    }
+
+    .comissao-row .label { color: var(--text-secondary); }
+    .comissao-row .value { font-weight: 600; }
+    .comissao-row .value.white { color: var(--text-primary); }
+    .comissao-row .value.gold { color: var(--accent-gold); }
+    .comissao-row .value.green { color: var(--accent-green); }
+    .comissao-row .value.cyan { color: var(--accent-cyan); }
+
+    .comissao-total {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(168, 85, 247, 0.3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .comissao-total .label { color: var(--text-primary); font-weight: 600; }
+    .comissao-total .value { font-size: 22px; font-weight: 800; color: var(--accent-green); }
+
+    .custo-equipe-box {
+      background: var(--bg-secondary);
+      border-radius: 10px;
+      padding: 12px;
+      margin-top: 12px;
+    }
+
+    .table-container {
+      overflow: hidden;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .comissao-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+
+    .comissao-table th {
+      background: var(--bg-input);
+      padding: 8px 6px;
+      text-align: left;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .comissao-table th:nth-child(2),
+    .comissao-table th:nth-child(3) { text-align: center; }
+
+    .comissao-table td {
+      padding: 6px;
+      border-top: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .comissao-table td:nth-child(2),
+    .comissao-table td:nth-child(3) { text-align: center; }
+
+    .comissao-table tr.active {
+      background: var(--accent-gold-soft);
+    }
+
+    .comissao-table tr.active td {
+      color: var(--accent-gold);
+      font-weight: 700;
+    }
+
+    .breakeven {
+      background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+      border: 2px solid var(--accent-gold);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .breakeven-title {
+      font-size: 11px;
+      color: var(--accent-gold);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .breakeven-value {
+      font-size: 48px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .breakeven-unit {
+      font-size: 16px;
+      color: var(--text-secondary);
+      margin-top: 6px;
+    }
+
+    .breakeven-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .breakeven-item-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent-gold);
+    }
+
+    .breakeven-item-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status-badge.profit { background: var(--accent-green-soft); color: var(--accent-green); }
+    .status-badge.loss { background: var(--accent-red-soft); color: var(--accent-red); }
+
+    .status-diff {
+      font-size: 16px;
+      font-weight: 700;
+      margin-top: 12px;
+    }
+
+    .status-diff.green { color: var(--accent-green); }
+    .status-diff.red { color: var(--accent-red); }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .result-card {
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .result-card.ebitda { border: 1px solid rgba(245, 158, 11, 0.5); }
+    .result-card.lucro-pos { border: 1px solid rgba(34, 197, 94, 0.5); }
+    .result-card.lucro-neg { border: 1px solid rgba(239, 68, 68, 0.5); }
+    .result-card.gold { background: var(--accent-gold-soft); border: 1px solid rgba(245, 158, 11, 0.5); }
+    .result-card.blue { background: var(--accent-blue-soft); border: 1px solid rgba(59, 130, 246, 0.5); }
+
+    .result-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
+    .result-value { font-size: 22px; font-weight: 800; margin-top: 4px; }
+    .result-value.gold { color: var(--accent-gold); }
+    .result-value.blue { color: var(--accent-blue); }
+    .result-value.green { color: var(--accent-green); }
+    .result-value.red { color: var(--accent-red); }
+    .result-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+    .dre-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dre-row:last-child { border-bottom: none; }
+    .dre-row.highlight { background: var(--accent-gold-soft); margin: 4px -12px; padding: 8px 12px; border-radius: 8px; border: none; }
+    .dre-row.highlight-green { background: var(--accent-green-soft); margin: 4px -12px; padding: 8px 12px; border-radius: 8px; border: none; }
+    .dre-row.highlight-red { background: var(--accent-red-soft); margin: 4px -12px; padding: 8px 12px; border-radius: 8px; border: none; }
+    .dre-row.small { font-size: 11px; padding: 4px 0; }
+    .dre-row .red { color: var(--accent-red); }
+    .dre-row .gold { color: var(--accent-gold); font-weight: 600; }
+    .dre-row .green { color: var(--accent-green); font-weight: 700; }
+
+    .roi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .roi-box {
+      background: var(--bg-secondary);
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .roi-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
+    .roi-value { font-size: 18px; font-weight: 700; margin-top: 4px; }
+
+    .footer {
+      text-align: center;
+      padding: 24px 0;
+      color: var(--text-muted);
+      font-size: 11px;
+      margin-top: 32px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer strong { color: var(--text-secondary); }
+
+    @media (max-width: 768px) {
+      .form-grid, .form-grid-3 { grid-template-columns: 1fr; }
+      .result-grid, .roi-grid, .breakeven-grid { grid-template-columns: 1fr; }
+      .breakeven-value { font-size: 36px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="logo">MEMO CASE</div>
+      <p class="subtitle">Simulador Financeiro — Modelo Kiosk Premium</p>
+      <span class="version">✓ v4.0 — Comissão Escalonada</span>
+    </header>
+
+    <div class="main-grid">
+      <!-- Coluna 1: Inputs Principais -->
+      <div>
+        <!-- Vendas -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon icon-green">💰</div>
+            <div>
+              <div class="card-title">Vendas & Produto</div>
+              <div class="card-subtitle">Configure preço e volume</div>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">🏷️ Preço de Venda</label>
+              <div class="input-wrap">
+                <span class="input-prefix">R$</span>
+                <input type="number" id="precoVenda" value="99" class="has-prefix" oninput="calcular()">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">📦 Capas / Dia</label>
+              <div class="input-wrap">
+                <input type="number" id="capasPerDay" value="25" class="has-suffix" oninput="calcular()">
+                <span class="input-suffix">/dia</span>
+              </div>
+            </div>
+          </div>
+          <div class="info-box">
+            <div class="info-row">
+              <span class="info-label">Vendas / Mês (Kiosk)</span>
+              <span class="info-value" id="vendasMes" style="color: var(--accent-gold); font-weight: 700;">750</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Vendas / Funcionário</span>
+              <span class="info-value" id="vendasFunc">375</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Faturamento Bruto</span>
+              <span class="info-value" id="faturamentoBruto">R$ 74.250</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Funcionários -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon icon-purple">👥</div>
+            <div>
+              <div class="card-title">Equipe & Comissão</div>
+              <div class="card-subtitle">2 funcionários + folguista (sócio)</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">💵 Salário Fixo (por funcionário)</label>
+            <div class="input-wrap">
+              <span class="input-prefix">R$</span>
+              <input type="number" id="salarioFixo" value="2000" step="100" class="has-prefix" oninput="calcular()">
+            </div>
+          </div>
+
+          <div class="comissao-box">
+            <div class="comissao-title">📊 Cálculo Automático por Funcionário</div>
+            <div class="comissao-row">
+              <span class="label">Vendas atribuídas</span>
+              <span class="value white" id="vendasAtribuidas">375 capas</span>
+            </div>
+            <div class="comissao-row">
+              <span class="label">Faixa de comissão</span>
+              <span class="value gold" id="faixaComissao">2%</span>
+            </div>
+            <div class="comissao-row">
+              <span class="label">Salário Fixo</span>
+              <span class="value white" id="salarioFixoDisplay">R$ 2.000,00</span>
+            </div>
+            <div class="comissao-row">
+              <span class="label">Comissão</span>
+              <span class="value green" id="comissaoValor">+ R$ 742,50</span>
+            </div>
+            <div class="comissao-row">
+              <span class="label">Bônus Meta</span>
+              <span class="value cyan" id="bonusValor">+ R$ 500,00</span>
+            </div>
+            <div class="comissao-total">
+              <span class="label">Salário Total / Func.</span>
+              <span class="value" id="salarioTotal">R$ 3.242,50</span>
+            </div>
+          </div>
+
+          <div class="custo-equipe-box">
+            <div class="info-row" style="border: none; padding: 0;">
+              <span class="info-label">Custo Total (2 funcionários)</span>
+              <span class="info-value" id="custoEquipe" style="color: var(--accent-red); font-weight: 700;">R$ 6.485,00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Custos Variáveis -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon icon-orange">📊</div>
+            <div>
+              <div class="card-title">Custos Variáveis</div>
+              <div class="card-subtitle">Por unidade vendida</div>
+            </div>
+          </div>
+          <div class="form-grid form-grid-3">
+            <div class="form-group">
+              <label class="form-label">📱 Capinha</label>
+              <div class="input-wrap">
+                <span class="input-prefix">R$</span>
+                <input type="number" id="custoCapinha" value="16.71" step="0.01" class="has-prefix" oninput="calcular()">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">🎨 Tinta</label>
+              <div class="input-wrap">
+                <span class="input-prefix">R$</span>
+                <input type="number" id="custoTinta" value="0.45" step="0.01" class="has-prefix" oninput="calcular()">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">🔧 Manutenção</label>
+              <div class="input-wrap">
+                <span class="input-prefix">R$</span>
+                <input type="number" id="custoManutencao" value="1.50" step="0.01" class="has-prefix" oninput="calcular()">
+              </div>
+            </div>
+          </div>
+          <div class="info-box" style="text-align: center;">
+            <span class="info-label">Custo variável unitário: </span>
+            <span class="info-value" id="custoVarUnit" style="color: var(--accent-gold);">R$ 18,66</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coluna 2: Custos Fixos e CAPEX -->
+      <div>
+        <!-- Custos Fixos -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon icon-blue">🏢</div>
+            <div>
+              <div class="card-title">Custos Fixos Mensais</div>
+              <div class="card-subtitle">Despesas operacionais</div>
+            </div>
+          </div>
+
+          <div class="section-title">Estrutura</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">🏬 Aluguel Kiosk</label>
+              <div class="input-wrap">
+                <span class="input-prefix">R$</span>
+                <input type="number" id="aluguel" value="12000" step="100" class="has-prefix" oninput="calcular()">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">⚡ Energia + Internet</label>
+              <div class="input-wrap">
+                <span class="input-prefix">R$</span>
+                <input type="number" id="energia" value="600" step="50" class="has-prefix" oninput="calcular()">
+              </div>
+            </div>
+          </div>
+
+          <div class="section-title">Operação</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">💻 Sistema / Suporte</label>
+              <div class="input-wrap">
+                <span class="input-prefix">R$</span>
+                <input type="number" id="sistema" value="400" step="50" class="has-prefix" oninput="calcular()">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">📋 Contabilidade</label>
+              <div class="input-wrap">
+                <span class="input-prefix">R$</span>
+                <input type="number" id="contabilidade" value="600" step="50" class="has-prefix" oninput="calcular()">
+              </div>
+            </div>
+          </div>
+
+          <div class="section-title">Marketing</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">📱 Tráfego Pago</label>
+              <div class="input-wrap">
+                <span class="input-prefix">R$</span>
+                <input type="number" id="trafego" value="3000" step="100" class="has-prefix" oninput="calcular()">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">🎬 Agência</label>
+              <div class="input-wrap">
+                <span class="input-prefix">R$</span>
+                <input type="number" id="agencia" value="3000" step="100" class="has-prefix" oninput="calcular()">
+              </div>
+            </div>
+          </div>
+
+          <div class="info-box">
+            <div class="info-row">
+              <span class="info-label">Custos Fixos (s/ equipe)</span>
+              <span class="info-value" id="custosFixosSemEquipe">R$ 19.600</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Equipe (2 func.)</span>
+              <span class="info-value" id="custoEquipeResumo">R$ 6.485</span>
+            </div>
+            <div class="info-row" style="border-top: 1px solid var(--border); padding-top: 8px; margin-top: 4px;">
+              <span class="info-label" style="color: var(--accent-blue); font-weight: 600;">Total Custos Fixos</span>
+              <span class="info-value" id="custosFixosTotal" style="color: var(--accent-blue); font-weight: 700;">R$ 26.085</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CAPEX -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon icon-cyan">💎</div>
+            <div>
+              <div class="card-title">CAPEX & Financiamento</div>
+              <div class="card-subtitle">Investimento inicial</div>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">🖨️ Máquina</label>
+              <div class="input-wrap">
+                <span class="input-prefix">R$</span>
+                <input type="number" id="capexMaquina" value="70757" step="1000" class="has-prefix" oninput="calcular()">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">🏗️ Estrutura</label>
+              <div class="input-wrap">
+                <span class="input-prefix">R$</span>
+                <input type="number" id="capexEstrutura" value="40000" step="1000" class="has-prefix" oninput="calcular()">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">📦 Estoque</label>
+              <div class="input-wrap">
+                <input type="number" id="estoqueInicial" value="2000" step="100" class="has-suffix" oninput="calcular()">
+                <span class="input-suffix">un</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">🎨 Comunicação</label>
+              <div class="input-wrap">
+                <span class="input-prefix">R$</span>
+                <input type="number" id="capexComunicacao" value="5000" step="500" class="has-prefix" oninput="calcular()">
+              </div>
+            </div>
+          </div>
+
+          <div class="section-title">Financiamento</div>
+          <div class="form-grid form-grid-3">
+            <div class="form-group">
+              <label class="form-label">🏦 Juros</label>
+              <div class="input-wrap">
+                <input type="number" id="taxaJuros" value="5" step="0.5" class="has-suffix" oninput="calcular()">
+                <span class="input-suffix">% a.a.</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">📅 Vida Máq.</label>
+              <div class="input-wrap">
+                <input type="number" id="vidaUtilMaquina" value="60" step="12" min="12" class="has-suffix" oninput="calcular()">
+                <span class="input-suffix">meses</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">📅 Vida Estr.</label>
+              <div class="input-wrap">
+                <input type="number" id="vidaUtilEstrutura" value="60" step="12" min="12" class="has-suffix" oninput="calcular()">
+                <span class="input-suffix">meses</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-box">
+            <div class="info-row">
+              <span class="info-label">Depreciação/mês</span>
+              <span class="info-value" id="depreciacaoMes">R$ 1.846</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Juros/mês</span>
+              <span class="info-value" id="jurosMes">R$ 622</span>
+            </div>
+            <div class="info-row" style="border-top: 1px solid var(--border); padding-top: 8px; margin-top: 4px;">
+              <span class="info-label" style="color: var(--accent-cyan); font-weight: 600;">CAPEX Total</span>
+              <span class="info-value" id="capexTotal" style="color: var(--accent-cyan); font-weight: 700;">R$ 149.177</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabela de Comissões -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon icon-gold">📈</div>
+            <div>
+              <div class="card-title">Tabela de Comissões</div>
+              <div class="card-subtitle">Por funcionário</div>
+            </div>
+          </div>
+          <div class="table-container">
+            <table class="comissao-table" id="tabelaComissoes">
+              <thead>
+                <tr>
+                  <th>Vendas</th>
+                  <th>%</th>
+                  <th>Bônus</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr data-min="0" data-max="299"><td>&lt; 300</td><td>0%</td><td>R$ 0</td></tr>
+                <tr data-min="300" data-max="349"><td>300-349</td><td>1%</td><td>R$ 250</td></tr>
+                <tr data-min="350" data-max="399"><td>350-399</td><td>1,5%</td><td>R$ 250</td></tr>
+                <tr data-min="400" data-max="449"><td>400-449</td><td>2%</td><td>R$ 500</td></tr>
+                <tr data-min="450" data-max="499"><td>450-499</td><td>2,5%</td><td>R$ 500</td></tr>
+                <tr data-min="500" data-max="549"><td>500-549</td><td>3%</td><td>R$ 750</td></tr>
+                <tr data-min="550" data-max="599"><td>550-599</td><td>3,5%</td><td>R$ 750</td></tr>
+                <tr data-min="600" data-max="649"><td>600-649</td><td>4%</td><td>R$ 1.000</td></tr>
+                <tr data-min="650" data-max="699"><td>650-699</td><td>4,5%</td><td>R$ 1.000</td></tr>
+                <tr data-min="700" data-max="749"><td>700-749</td><td>5%</td><td>R$ 1.250</td></tr>
+                <tr data-min="750" data-max="99999"><td>750+</td><td>5,5%</td><td>R$ 1.500</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coluna 3: Resultados -->
+      <div>
+        <!-- Break-even -->
+        <div class="breakeven">
+          <div class="breakeven-title">🎯 Ponto de Equilíbrio</div>
+          <div class="breakeven-value" id="breakEvenCapas">386</div>
+          <div class="breakeven-unit">capas / mês para empatar</div>
+          <div class="breakeven-grid">
+            <div>
+              <div class="breakeven-item-value" id="breakEvenDia">~13</div>
+              <div class="breakeven-item-label">capas / dia</div>
+            </div>
+            <div>
+              <div class="breakeven-item-value" id="breakEvenFaturamento">R$ 38.214</div>
+              <div class="breakeven-item-label">faturamento mín.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status -->
+        <div class="card" style="text-align: center;">
+          <div class="card-header" style="justify-content: center;">
+            <div class="card-icon icon-purple">📈</div>
+            <div style="text-align: left;">
+              <div class="card-title">Situação Atual</div>
+              <div class="card-subtitle">Com base nos parâmetros</div>
+            </div>
+          </div>
+          <span class="status-badge profit" id="statusBadge">✓ Operação Lucrativa</span>
+          <div class="status-diff green" id="statusDiff">+364 capas acima do break-even</div>
+        </div>
+
+        <!-- EBITDA vs Lucro -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon icon-gold">📊</div>
+            <div>
+              <div class="card-title">Resultado Financeiro</div>
+              <div class="card-subtitle">EBITDA e Lucro Líquido</div>
+            </div>
+          </div>
+          <div class="result-grid">
+            <div class="result-card ebitda">
+              <div class="result-label">EBITDA</div>
+              <div class="result-value gold" id="ebitdaCard">R$ 24.368</div>
+              <div class="result-sub" id="ebitdaPercent">32,8%</div>
+            </div>
+            <div class="result-card lucro-pos" id="lucroCardContainer">
+              <div class="result-label">Lucro Líquido</div>
+              <div class="result-value green" id="lucroCard">R$ 21.900</div>
+              <div class="result-sub" id="lucroPercent">29,5%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DRE -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon icon-red">📋</div>
+            <div>
+              <div class="card-title">DRE Mensal</div>
+              <div class="card-subtitle">Demonstrativo resumido</div>
+            </div>
+          </div>
+          <div class="dre-row"><span><strong>Receita Bruta</strong></span><span id="dreReceitaBruta"><strong>R$ 74.250</strong></span></div>
+          <div class="dre-row small"><span class="red">(-) Impostos</span><span class="red" id="dreImpostos">- R$ 6.089</span></div>
+          <div class="dre-row small"><span class="red">(-) Custos Variáveis</span><span class="red" id="dreCustosVar">- R$ 13.995</span></div>
+          <div class="dre-row"><span><strong>Margem Contribuição</strong></span><span id="dreMargem"><strong>R$ 54.166</strong></span></div>
+          <div class="dre-row small"><span class="red">(-) Custos Fixos</span><span class="red" id="dreCustosFixos">- R$ 19.600</span></div>
+          <div class="dre-row small"><span class="red">(-) Equipe (2 func.)</span><span class="red" id="dreEquipe">- R$ 6.485</span></div>
+          <div class="dre-row highlight"><span class="gold"><strong>EBITDA</strong></span><span class="gold" id="dreEbitda"><strong>R$ 24.368</strong></span></div>
+          <div class="dre-row small"><span class="red">(-) D&A + Juros</span><span class="red" id="dreDAJuros">- R$ 2.468</span></div>
+          <div class="dre-row highlight-green" id="dreLucroRow"><span class="green" id="dreLucroLabel"><strong>LUCRO LÍQUIDO</strong></span><span class="green" id="dreLucro"><strong>R$ 21.900</strong></span></div>
+        </div>
+
+        <!-- Payback -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon icon-cyan">💎</div>
+            <div>
+              <div class="card-title">ROI & Payback</div>
+              <div class="card-subtitle">Retorno do investimento</div>
+            </div>
+          </div>
+          <div class="result-grid">
+            <div class="result-card gold">
+              <div class="result-label">CAPEX</div>
+              <div class="result-value gold" id="capexTotalCard">R$ 149.177</div>
+            </div>
+            <div class="result-card blue">
+              <div class="result-label">Payback</div>
+              <div class="result-value blue" id="paybackCard">~6,8m</div>
+            </div>
+          </div>
+          <div class="roi-grid">
+            <div class="roi-box">
+              <div class="roi-label">ROI Mensal</div>
+              <div class="roi-value" id="roiMensal">14,7%</div>
+            </div>
+            <div class="roi-box">
+              <div class="roi-label">ROI Anual</div>
+              <div class="roi-value" id="roiAnual">176%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <strong>MEMO CASE</strong> — Simulador Financeiro v4.0 Comissão Escalonada<br>
+      2 funcionários por kiosk • Folguista = Sócio • Comissão por faixa de vendas
+    </footer>
+  </div>
+
+  <script>
+    const numFuncionarios = 2;
+
+    function formatCurrency(value) {
+      return 'R$ ' + value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function formatCurrencyInt(value) {
+      return 'R$ ' + value.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    }
+
+    function calcularComissaoEscalonada(vendasPorFuncionario, faturamentoPorFuncionario) {
+      let percentual = 0;
+      let bonus = 0;
+      
+      if (vendasPorFuncionario < 300) { percentual = 0; bonus = 0; }
+      else if (vendasPorFuncionario < 350) { percentual = 1; bonus = 250; }
+      else if (vendasPorFuncionario < 400) { percentual = 1.5; bonus = 250; }
+      else if (vendasPorFuncionario < 450) { percentual = 2; bonus = 500; }
+      else if (vendasPorFuncionario < 500) { percentual = 2.5; bonus = 500; }
+      else if (vendasPorFuncionario < 550) { percentual = 3; bonus = 750; }
+      else if (vendasPorFuncionario < 600) { percentual = 3.5; bonus = 750; }
+      else if (vendasPorFuncionario < 650) { percentual = 4; bonus = 1000; }
+      else if (vendasPorFuncionario < 700) { percentual = 4.5; bonus = 1000; }
+      else if (vendasPorFuncionario < 750) { percentual = 5; bonus = 1250; }
+      else { percentual = 5.5; bonus = 1500; }
+      
+      const comissao = faturamentoPorFuncionario * (percentual / 100);
+      return { percentual, bonus, comissao };
+    }
+
+    function calcularSimplesNacional(faturamentoAnual) {
+      if (faturamentoAnual <= 180000) return { aliquota: 0.04, faixa: 'Até R$ 180k' };
+      if (faturamentoAnual <= 360000) return { aliquota: 0.055, faixa: 'R$ 180k–360k' };
+      if (faturamentoAnual <= 720000) return { aliquota: 0.076, faixa: 'R$ 360k–720k' };
+      if (faturamentoAnual <= 1800000) return { aliquota: 0.082, faixa: 'R$ 720k–1.8M' };
+      if (faturamentoAnual <= 3600000) return { aliquota: 0.095, faixa: 'R$ 1.8M–3.6M' };
+      return { aliquota: 0.11, faixa: 'Acima de R$ 3.6M' };
+    }
+
+    function atualizarTabelaComissoes(vendasFunc) {
+      const rows = document.querySelectorAll('#tabelaComissoes tbody tr');
+      rows.forEach(row => {
+        const min = parseInt(row.dataset.min);
+        const max = parseInt(row.dataset.max);
+        if (vendasFunc >= min && vendasFunc <= max) {
+          row.classList.add('active');
+        } else {
+          row.classList.remove('active');
+        }
+      });
+    }
+
+    function calcular() {
+      const precoVenda = parseFloat(document.getElementById('precoVenda').value) || 0;
+      const capasPerDay = parseFloat(document.getElementById('capasPerDay').value) || 0;
+      const custoCapinha = parseFloat(document.getElementById('custoCapinha').value) || 0;
+      const custoTinta = parseFloat(document.getElementById('custoTinta').value) || 0;
+      const custoManutencao = parseFloat(document.getElementById('custoManutencao').value) || 0;
+      const salarioFixo = parseFloat(document.getElementById('salarioFixo').value) || 0;
+      const aluguel = parseFloat(document.getElementById('aluguel').value) || 0;
+      const energia = parseFloat(document.getElementById('energia').value) || 0;
+      const sistema = parseFloat(document.getElementById('sistema').value) || 0;
+      const contabilidade = parseFloat(document.getElementById('contabilidade').value) || 0;
+      const trafego = parseFloat(document.getElementById('trafego').value) || 0;
+      const agencia = parseFloat(document.getElementById('agencia').value) || 0;
+      const capexMaquina = parseFloat(document.getElementById('capexMaquina').value) || 0;
+      const capexEstrutura = parseFloat(document.getElementById('capexEstrutura').value) || 0;
+      const estoqueInicial = parseFloat(document.getElementById('estoqueInicial').value) || 0;
+      const capexComunicacao = parseFloat(document.getElementById('capexComunicacao').value) || 0;
+      const taxaJuros = parseFloat(document.getElementById('taxaJuros').value) || 0;
+      const vidaUtilMaquina = parseFloat(document.getElementById('vidaUtilMaquina').value) || 60;
+      const vidaUtilEstrutura = parseFloat(document.getElementById('vidaUtilEstrutura').value) || 60;
+
+      const capasMes = capasPerDay * 30;
+      const receitaBruta = capasMes * precoVenda;
+      const faturamentoAnual = receitaBruta * 12;
+
+      const vendasPorFuncionario = Math.floor(capasMes / numFuncionarios);
+      const faturamentoPorFuncionario = vendasPorFuncionario * precoVenda;
+
+      const comissaoInfo = calcularComissaoEscalonada(vendasPorFuncionario, faturamentoPorFuncionario);
+      const salarioTotalFuncionario = salarioFixo + comissaoInfo.comissao + comissaoInfo.bonus;
+      const custoTotalFuncionarios = salarioTotalFuncionario * numFuncionarios;
+
+      const capexEstoque = estoqueInicial * custoCapinha;
+      const capexTotalVal = capexMaquina + capexEstrutura + capexEstoque + capexComunicacao;
+
+      const depMaquina = capexMaquina / vidaUtilMaquina;
+      const depEstrutura = capexEstrutura / vidaUtilEstrutura;
+      const depreciacaoTotal = depMaquina + depEstrutura;
+      const jurosAnuais = capexTotalVal * (taxaJuros / 100);
+      const jurosMensais = jurosAnuais / 12;
+
+      const simples = calcularSimplesNacional(faturamentoAnual);
+      const impostos = receitaBruta * simples.aliquota;
+      const receitaLiquida = receitaBruta - impostos;
+
+      const custoVariavelUnit = custoCapinha + custoTinta + custoManutencao;
+      const custosVariaveisMes = capasMes * custoVariavelUnit;
+
+      const margemContribuicao = receitaLiquida - custosVariaveisMes;
+
+      const custosFixosOperacionais = aluguel + energia + sistema + contabilidade + trafego + agencia;
+      const custosFixos = custosFixosOperacionais + custoTotalFuncionarios;
+
+      const ebitda = margemContribuicao - custosFixos;
+      const ebit = ebitda - depreciacaoTotal;
+      const lucroLiquido = ebit - jurosMensais;
+
+      const margemEbitda = receitaBruta > 0 ? (ebitda / receitaBruta) * 100 : 0;
+      const margemLiquida = receitaBruta > 0 ? (lucroLiquido / receitaBruta) * 100 : 0;
+
+      const margemContribuicaoUnit = precoVenda - custoVariavelUnit - (precoVenda * simples.aliquota);
+      const custosTotaisMes = custosFixos + depreciacaoTotal + jurosMensais;
+      const breakEvenCapasVal = margemContribuicaoUnit > 0 ? Math.ceil(custosTotaisMes / margemContribuicaoUnit) : 0;
+      const breakEvenDiaVal = Math.ceil(breakEvenCapasVal / 30);
+      const breakEvenFaturamentoVal = breakEvenCapasVal * precoVenda;
+
+      const paybackMeses = lucroLiquido > 0 ? capexTotalVal / lucroLiquido : Infinity;
+      const roiMensalVal = capexTotalVal > 0 ? (lucroLiquido / capexTotalVal) * 100 : 0;
+      const roiAnualVal = roiMensalVal * 12;
+
+      const diferencaBreakeven = capasMes - breakEvenCapasVal;
+      const isLucrativo = lucroLiquido > 0;
+
+      document.getElementById('vendasMes').textContent = capasMes;
+      document.getElementById('vendasFunc').textContent = vendasPorFuncionario;
+      document.getElementById('faturamentoBruto').textContent = formatCurrencyInt(receitaBruta);
+
+      document.getElementById('vendasAtribuidas').textContent = vendasPorFuncionario + ' capas';
+      document.getElementById('faixaComissao').textContent = comissaoInfo.percentual + '%';
+      document.getElementById('salarioFixoDisplay').textContent = formatCurrency(salarioFixo);
+      document.getElementById('comissaoValor').textContent = '+ ' + formatCurrency(comissaoInfo.comissao);
+      document.getElementById('bonusValor').textContent = '+ ' + formatCurrency(comissaoInfo.bonus);
+      document.getElementById('salarioTotal').textContent = formatCurrency(salarioTotalFuncionario);
+      document.getElementById('custoEquipe').textContent = formatCurrency(custoTotalFuncionarios);
+
+      document.getElementById('custoVarUnit').textContent = formatCurrency(custoVariavelUnit);
+
+      document.getElementById('custosFixosSemEquipe').textContent = formatCurrencyInt(custosFixosOperacionais);
+      document.getElementById('custoEquipeResumo').textContent = formatCurrencyInt(custoTotalFuncionarios);
+      document.getElementById('custosFixosTotal').textContent = formatCurrencyInt(custosFixos);
+
+      document.getElementById('depreciacaoMes').textContent = formatCurrency(depreciacaoTotal);
+      document.getElementById('jurosMes').textContent = formatCurrency(jurosMensais);
+      document.getElementById('capexTotal').textContent = formatCurrencyInt(capexTotalVal);
+
+      atualizarTabelaComissoes(vendasPorFuncionario);
+
+      document.getElementById('breakEvenCapas').textContent = breakEvenCapasVal;
+      document.getElementById('breakEvenDia').textContent = '~' + breakEvenDiaVal;
+      document.getElementById('breakEvenFaturamento').textContent = formatCurrencyInt(breakEvenFaturamentoVal);
+
+      document.getElementById('statusBadge').className = 'status-badge ' + (isLucrativo ? 'profit' : 'loss');
+      document.getElementById('statusBadge').textContent = isLucrativo ? '✓ Operação Lucrativa' : '✗ Operação com Prejuízo';
+      document.getElementById('statusDiff').className = 'status-diff ' + (isLucrativo ? 'green' : 'red');
+      document.getElementById('statusDiff').textContent = (isLucrativo ? '+' : '') + diferencaBreakeven + ' capas ' + (isLucrativo ? 'acima' : 'abaixo') + ' do break-even';
+
+      document.getElementById('ebitdaCard').textContent = formatCurrencyInt(ebitda);
+      document.getElementById('ebitdaPercent').textContent = margemEbitda.toFixed(1) + '%';
+      document.getElementById('lucroCard').textContent = formatCurrencyInt(lucroLiquido);
+      document.getElementById('lucroCard').className = 'result-value ' + (isLucrativo ? 'green' : 'red');
+      document.getElementById('lucroCardContainer').className = 'result-card ' + (isLucrativo ? 'lucro-pos' : 'lucro-neg');
+      document.getElementById('lucroPercent').textContent = margemLiquida.toFixed(1) + '%';
+
+      document.getElementById('dreReceitaBruta').innerHTML = '<strong>' + formatCurrencyInt(receitaBruta) + '</strong>';
+      document.getElementById('dreImpostos').textContent = '- ' + formatCurrencyInt(impostos);
+      document.getElementById('dreCustosVar').textContent = '- ' + formatCurrencyInt(custosVariaveisMes);
+      document.getElementById('dreMargem').innerHTML = '<strong>' + formatCurrencyInt(margemContribuicao) + '</strong>';
+      document.getElementById('dreCustosFixos').textContent = '- ' + formatCurrencyInt(custosFixosOperacionais);
+      document.getElementById('dreEquipe').textContent = '- ' + formatCurrencyInt(custoTotalFuncionarios);
+      document.getElementById('dreEbitda').innerHTML = '<strong>' + formatCurrencyInt(ebitda) + '</strong>';
+      document.getElementById('dreDAJuros').textContent = '- ' + formatCurrencyInt(depreciacaoTotal + jurosMensais);
+      document.getElementById('dreLucro').innerHTML = '<strong>' + formatCurrencyInt(lucroLiquido) + '</strong>';
+      document.getElementById('dreLucroRow').className = 'dre-row ' + (isLucrativo ? 'highlight-green' : 'highlight-red');
+      document.getElementById('dreLucro').className = isLucrativo ? 'green' : 'red';
+      document.getElementById('dreLucroLabel').className = isLucrativo ? 'green' : 'red';
+
+      document.getElementById('capexTotalCard').textContent = formatCurrencyInt(capexTotalVal);
+      document.getElementById('paybackCard').textContent = paybackMeses === Infinity || lucroLiquido <= 0 ? '∞' : '~' + paybackMeses.toFixed(1) + 'm';
+      document.getElementById('roiMensal').textContent = roiMensalVal.toFixed(1) + '%';
+      document.getElementById('roiAnual').textContent = roiAnualVal.toFixed(0) + '%';
+    }
+
+    document.addEventListener('DOMContentLoaded', calcular);
+  </script>
+</body>
+</html>
