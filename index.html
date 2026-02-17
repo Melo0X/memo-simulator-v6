@@ -992,13 +992,18 @@
 
     // ── Funcionários ──
     let funcionarios = [
-      { id: 1, nome: 'Funcionário 1', salarioFixo: 2000 },
-      { id: 2, nome: 'Funcionário 2', salarioFixo: 2000 },
+      { id: 1, salarioFixo: 2000 },
+      { id: 2, salarioFixo: 2000 },
     ];
     let nextFuncId = 3;
 
+    // Renumera os nomes para sempre mostrar 1, 2, 3... na ordem real
+    function getNomeFunc(idx) {
+      return 'Funcionário ' + (idx + 1);
+    }
+
     function addFuncionario() {
-      funcionarios.push({ id: nextFuncId, nome: 'Funcionário ' + nextFuncId, salarioFixo: 2000 });
+      funcionarios.push({ id: nextFuncId, salarioFixo: 2000 });
       nextFuncId++;
       renderFuncionarios();
       calcular();
@@ -1013,12 +1018,16 @@
 
     function updateSalario(id, valor) {
       const func = funcionarios.find(f => f.id === id);
-      if (func) func.salarioFixo = parseFloat(valor) || 0;
-      calcular();
+      if (func) {
+        func.salarioFixo = parseFloat(valor) || 0;
+        // NÃO recria o HTML — apenas recalcula os números
+        atualizarStatsFuncionarios();
+        calcular();
+      }
     }
 
-    function renderFuncionarios() {
-      const container = document.getElementById('funcContainer');
+    // Calcula e retorna dados de cada funcionário
+    function calcularDadosEquipe() {
       const precoVenda = parseFloat(document.getElementById('precoVenda').value) || 0;
       const capasPerDay = parseFloat(document.getElementById('capasPerDay').value) || 0;
       const capasMes = capasPerDay * 30;
@@ -1026,47 +1035,110 @@
       const vendasPorFunc = numFunc > 0 ? Math.floor(capasMes / numFunc) : 0;
       const faixa = getFaixaComissao(vendasPorFunc);
 
-      container.innerHTML = funcionarios.map((func, idx) => {
+      let custoTotal = 0;
+      const dados = funcionarios.map((func, idx) => {
         const comissaoValor = vendasPorFunc * precoVenda * (faixa.pct / 100);
         const salarioTotal = func.salarioFixo + comissaoValor + faixa.bonus;
+        custoTotal += salarioTotal;
+        return {
+          id: func.id,
+          nome: getNomeFunc(idx),
+          salarioFixo: func.salarioFixo,
+          vendasPorFunc,
+          faixa,
+          comissaoValor,
+          salarioTotal
+        };
+      });
+
+      return { dados, custoTotal, vendasPorFunc, faixa };
+    }
+
+    // Atualiza apenas os textos dos stats dos funcionários SEM recriar inputs
+    function atualizarStatsFuncionarios() {
+      const equipe = calcularDadosEquipe();
+
+      equipe.dados.forEach(d => {
+        const statsEl = document.getElementById('func-stats-' + d.id);
+        if (statsEl) {
+          statsEl.innerHTML = `
+            <div class="func-stat">
+              <div class="func-stat-label">Vendas Atrib.</div>
+              <div class="func-stat-value">${d.vendasPorFunc} capas</div>
+            </div>
+            <div class="func-stat">
+              <div class="func-stat-label">Faixa</div>
+              <div class="func-stat-value" style="color:var(--gold);">${d.faixa.pct}%</div>
+            </div>
+            <div class="func-stat">
+              <div class="func-stat-label">Comissão</div>
+              <div class="func-stat-value" style="color:var(--green);">+ ${formatCurrency(d.comissaoValor)}</div>
+            </div>
+            <div class="func-stat">
+              <div class="func-stat-label">Bônus</div>
+              <div class="func-stat-value" style="color:var(--cyan);">+ ${formatCurrency(d.faixa.bonus)}</div>
+            </div>
+          `;
+        }
+        const totalEl = document.getElementById('func-total-' + d.id);
+        if (totalEl) {
+          totalEl.textContent = formatCurrency(d.salarioTotal);
+        }
+        const nomeEl = document.getElementById('func-nome-' + d.id);
+        if (nomeEl) {
+          nomeEl.textContent = '👤 ' + d.nome;
+        }
+      });
+
+      document.getElementById('custoEquipeValor').textContent = formatCurrency(equipe.custoTotal);
+    }
+
+    // Recria o HTML completo dos funcionários (só chamado ao adicionar/remover)
+    function renderFuncionarios() {
+      const container = document.getElementById('funcContainer');
+      const equipe = calcularDadosEquipe();
+
+      container.innerHTML = equipe.dados.map(d => {
         return `
           <div class="func-card">
             <div class="func-header">
-              <div class="func-name">👤 ${func.nome}</div>
-              ${funcionarios.length > 1 ? `<button class="func-remove" onclick="removeFuncionario(${func.id})">×</button>` : ''}
+              <div class="func-name" id="func-nome-${d.id}">👤 ${d.nome}</div>
+              ${funcionarios.length > 1 ? `<button class="func-remove" onclick="removeFuncionario(${d.id})">×</button>` : ''}
             </div>
             <div class="input-group">
               <div class="input-label">💵 Salário Fixo</div>
               <div class="input-wrap has-prefix">
                 <span class="input-prefix">R$</span>
-                <input type="number" value="${func.salarioFixo}" step="100" min="0" oninput="updateSalario(${func.id}, this.value)">
+                <input type="number" id="func-salario-${d.id}" value="${d.salarioFixo}" step="100" min="0" oninput="updateSalario(${d.id}, this.value)">
               </div>
             </div>
-            <div class="func-stats">
+            <div class="func-stats" id="func-stats-${d.id}">
               <div class="func-stat">
                 <div class="func-stat-label">Vendas Atrib.</div>
-                <div class="func-stat-value">${vendasPorFunc} capas</div>
+                <div class="func-stat-value">${d.vendasPorFunc} capas</div>
               </div>
               <div class="func-stat">
                 <div class="func-stat-label">Faixa</div>
-                <div class="func-stat-value" style="color:var(--gold);">${faixa.pct}%</div>
+                <div class="func-stat-value" style="color:var(--gold);">${d.faixa.pct}%</div>
               </div>
               <div class="func-stat">
                 <div class="func-stat-label">Comissão</div>
-                <div class="func-stat-value" style="color:var(--green);">+ ${formatCurrency(comissaoValor)}</div>
+                <div class="func-stat-value" style="color:var(--green);">+ ${formatCurrency(d.comissaoValor)}</div>
               </div>
               <div class="func-stat">
                 <div class="func-stat-label">Bônus</div>
-                <div class="func-stat-value" style="color:var(--cyan);">+ ${formatCurrency(faixa.bonus)}</div>
+                <div class="func-stat-value" style="color:var(--cyan);">+ ${formatCurrency(d.faixa.bonus)}</div>
               </div>
             </div>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding:8px 10px;background:var(--bg-card);border-radius:8px;">
               <span style="font-size:11px;color:var(--text-muted);font-weight:600;">SALÁRIO TOTAL</span>
-              <span style="font-size:15px;font-weight:800;color:var(--text-primary);">${formatCurrency(salarioTotal)}</span>
+              <span style="font-size:15px;font-weight:800;color:var(--text-primary);" id="func-total-${d.id}">${formatCurrency(d.salarioTotal)}</span>
             </div>
           </div>
         `;
       }).join('');
+
+      document.getElementById('custoEquipeValor').textContent = formatCurrency(equipe.custoTotal);
     }
 
     // ── Comissão Table Render ──
@@ -1153,15 +1225,13 @@
       // Custos Fixos (sem equipe)
       const custosFixosSemEquipe = aluguel + energiaVal + sistema + contabilidade + trafegoVal + agencia;
 
-      // Equipe — calcular custo total
-      const numFunc = funcionarios.length;
-      const vendasPorFunc = numFunc > 0 ? Math.floor(capasMes / numFunc) : 0;
-      const faixa = getFaixaComissao(vendasPorFunc);
-      let custoEquipeTotal = 0;
-      funcionarios.forEach(func => {
-        const comissaoFunc = vendasPorFunc * precoVenda * (faixa.pct / 100);
-        custoEquipeTotal += func.salarioFixo + comissaoFunc + faixa.bonus;
-      });
+      // Equipe — usar cálculo centralizado
+      const equipe = calcularDadosEquipe();
+      const custoEquipeTotal = equipe.custoTotal;
+      const vendasPorFunc = equipe.vendasPorFunc;
+
+      // Atualizar stats dos funcionários sem recriar HTML
+      atualizarStatsFuncionarios();
 
       // EBITDA
       const ebitda = margemContribuicao - custosFixosSemEquipe - custoEquipeTotal;
@@ -1194,9 +1264,6 @@
       document.getElementById('vendasMes').textContent = capasMes;
       document.getElementById('faturamentoBruto').textContent = formatCurrency(receitaBruta);
 
-      // Render funcionários
-      renderFuncionarios();
-
       // Custo variável
       document.getElementById('custoVarUnit').textContent = formatCurrencyDec(custoVariavelUnit);
 
@@ -1204,9 +1271,6 @@
       document.getElementById('custosFixosSemEquipe').textContent = formatCurrency(custosFixosSemEquipe);
       document.getElementById('custosEquipeResumo').textContent = formatCurrency(custoEquipeTotal);
       document.getElementById('custosFixosTotal').textContent = formatCurrency(custosFixosSemEquipe + custoEquipeTotal);
-
-      // Equipe total
-      document.getElementById('custoEquipeValor').textContent = formatCurrency(custoEquipeTotal);
 
       // CAPEX
       document.getElementById('depreciacaoMes').textContent = formatCurrency(depreciacaoTotal);
