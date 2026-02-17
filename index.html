@@ -3,106 +3,174 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MEMO CASE — Simulador Financeiro v4.0</title>
-  <meta name="description" content="Simulador financeiro para kiosk de capinhas personalizadas MemoCase com comissão escalonada">
+  <title>MEMO CASE — Simulador Financeiro v7.0</title>
+  <meta name="description" content="Simulador financeiro para kiosk de capinhas personalizadas MemoCase — Equipe flexível + Faixas de Meta">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-    
     :root {
-      --bg-primary: #030712;
-      --bg-secondary: #0f172a;
-      --bg-card: #111827;
-      --bg-input: #1e293b;
-      --border: #1e293b;
-      --border-focus: #f59e0b;
-      --text-primary: #f8fafc;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
-      --accent-gold: #f59e0b;
-      --accent-gold-soft: rgba(245, 158, 11, 0.15);
-      --accent-green: #22c55e;
-      --accent-green-soft: rgba(34, 197, 94, 0.15);
-      --accent-blue: #3b82f6;
-      --accent-blue-soft: rgba(59, 130, 246, 0.15);
-      --accent-orange: #f97316;
-      --accent-orange-soft: rgba(249, 115, 22, 0.15);
-      --accent-red: #ef4444;
-      --accent-red-soft: rgba(239, 68, 68, 0.15);
-      --accent-purple: #a855f7;
-      --accent-purple-soft: rgba(168, 85, 247, 0.15);
-      --accent-cyan: #06b6d4;
-      --accent-cyan-soft: rgba(6, 182, 212, 0.15);
+      --bg-primary: #06080c;
+      --bg-secondary: #0c1017;
+      --bg-card: #10141c;
+      --bg-input: #181d28;
+      --bg-hover: #1e2433;
+      --border: #1c2231;
+      --border-light: #2a3344;
+      --border-focus: #c9973b;
+      --text-primary: #f0f2f5;
+      --text-secondary: #8b95a8;
+      --text-muted: #5a6478;
+      --gold: #c9973b;
+      --gold-soft: rgba(201, 151, 59, 0.12);
+      --gold-glow: rgba(201, 151, 59, 0.25);
+      --green: #2dd47a;
+      --green-soft: rgba(45, 212, 122, 0.12);
+      --blue: #3b8bf6;
+      --blue-soft: rgba(59, 139, 246, 0.12);
+      --orange: #f0913a;
+      --orange-soft: rgba(240, 145, 58, 0.12);
+      --red: #ef4b4b;
+      --red-soft: rgba(239, 75, 75, 0.12);
+      --purple: #9b6bf6;
+      --purple-soft: rgba(155, 107, 246, 0.12);
+      --cyan: #2bc5d9;
+      --cyan-soft: rgba(43, 197, 217, 0.12);
+      --yellow: #e8c94a;
+      --yellow-soft: rgba(232, 201, 74, 0.12);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    
+
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg-primary);
       color: var(--text-primary);
-      line-height: 1.5;
+      line-height: 1.55;
       font-size: 14px;
       min-height: 100vh;
     }
 
     .container {
-      max-width: 1400px;
+      max-width: 1440px;
       margin: 0 auto;
-      padding: 24px 16px 60px;
+      padding: 28px 20px 80px;
     }
 
+    /* ── Header ── */
     .header {
       text-align: center;
-      margin-bottom: 32px;
-      padding-bottom: 24px;
+      margin-bottom: 36px;
+      padding-bottom: 28px;
       border-bottom: 1px solid var(--border);
+      position: relative;
     }
-
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
     .logo {
-      font-size: 32px;
+      font-size: 34px;
       font-weight: 800;
-      letter-spacing: -1px;
-      background: linear-gradient(135deg, #fff 0%, var(--accent-gold) 100%);
+      letter-spacing: -1.5px;
+      background: linear-gradient(135deg, #fff 20%, var(--gold) 80%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-
-    .subtitle { color: var(--text-secondary); font-size: 15px; margin-top: 4px; }
-    
-    .version {
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 15px;
+      margin-top: 4px;
+      font-weight: 400;
+    }
+    .version-badge {
       display: inline-block;
       margin-top: 12px;
-      padding: 4px 12px;
-      background: var(--accent-green-soft);
-      color: var(--accent-green);
+      padding: 4px 14px;
+      background: var(--green-soft);
+      color: var(--green);
+      border: 1px solid rgba(45, 212, 122, 0.25);
       border-radius: 100px;
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: 0.5px;
     }
 
+    /* ── Meta Banner ── */
+    .meta-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 28px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .meta-level {
+      flex: 1;
+      text-align: center;
+      padding: 14px 8px;
+      transition: all 0.3s;
+      cursor: default;
+      border-right: 1px solid var(--border);
+    }
+    .meta-level:last-child { border-right: none; }
+    .meta-level .meta-icon { font-size: 16px; margin-bottom: 2px; }
+    .meta-level .meta-name { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; opacity: 0.5; }
+    .meta-level .meta-range { font-size: 13px; font-weight: 600; margin-top: 2px; opacity: 0.5; }
+    .meta-level.active .meta-name,
+    .meta-level.active .meta-range { opacity: 1; }
+    .meta-level.active { position: relative; }
+    .meta-level.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+    }
+
+    .meta-sobrevivencia { background: var(--red-soft); }
+    .meta-sobrevivencia.active { background: rgba(239,75,75,0.2); }
+    .meta-sobrevivencia .meta-name, .meta-sobrevivencia .meta-range { color: var(--red); }
+    .meta-sobrevivencia.active::after { background: var(--red); }
+
+    .meta-base { background: var(--yellow-soft); }
+    .meta-base.active { background: rgba(232,201,74,0.2); }
+    .meta-base .meta-name, .meta-base .meta-range { color: var(--yellow); }
+    .meta-base.active::after { background: var(--yellow); }
+
+    .meta-meta { background: var(--green-soft); }
+    .meta-meta.active { background: rgba(45,212,122,0.2); }
+    .meta-meta .meta-name, .meta-meta .meta-range { color: var(--green); }
+    .meta-meta.active::after { background: var(--green); }
+
+    .meta-stretch { background: var(--blue-soft); }
+    .meta-stretch.active { background: rgba(59,139,246,0.2); }
+    .meta-stretch .meta-name, .meta-stretch .meta-range { color: var(--blue); }
+    .meta-stretch.active::after { background: var(--blue); }
+
+    /* ── Grid ── */
     .main-grid {
       display: grid;
       gap: 20px;
     }
-
     @media (min-width: 1024px) {
-      .main-grid { grid-template-columns: 1fr 1fr 1fr; }
-    }
-
-    @media (min-width: 768px) and (max-width: 1023px) {
       .main-grid { grid-template-columns: 1fr 1fr; }
     }
 
+    /* ── Cards ── */
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 20px;
+      border-radius: 18px;
+      padding: 22px;
     }
-
     .card-header {
       display: flex;
       align-items: center;
@@ -111,578 +179,530 @@
       padding-bottom: 16px;
       border-bottom: 1px solid var(--border);
     }
-
     .card-icon {
       width: 40px;
       height: 40px;
-      border-radius: 10px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 18px;
+      flex-shrink: 0;
     }
+    .card-title { font-weight: 700; font-size: 15px; color: var(--text-primary); }
+    .card-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
 
-    .icon-green { background: var(--accent-green-soft); }
-    .icon-orange { background: var(--accent-orange-soft); }
-    .icon-blue { background: var(--accent-blue-soft); }
-    .icon-cyan { background: var(--accent-cyan-soft); }
-    .icon-gold { background: var(--accent-gold-soft); }
-    .icon-purple { background: var(--accent-purple-soft); }
-    .icon-red { background: var(--accent-red-soft); }
-
-    .card-title { font-size: 15px; font-weight: 600; }
-    .card-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-
-    .section-title {
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin: 16px 0 10px;
+    /* ── Inputs ── */
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
     }
-
-    .form-grid {
-      display: grid;
-      gap: 12px;
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    .form-grid-3 { grid-template-columns: repeat(3, 1fr); }
-
-    .form-group { display: flex; flex-direction: column; gap: 5px; }
-
-    .form-label {
+    .input-label {
       font-size: 11px;
       color: var(--text-secondary);
       display: flex;
       align-items: center;
       gap: 5px;
+      font-weight: 500;
     }
-
-    .input-wrap { position: relative; }
-
+    .input-wrap {
+      position: relative;
+    }
     .input-prefix, .input-suffix {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-muted);
-      font-size: 12px;
+      font-size: 13px;
       pointer-events: none;
     }
-
-    .input-prefix { left: 10px; }
-    .input-suffix { right: 10px; }
-
+    .input-prefix { left: 12px; }
+    .input-suffix { right: 12px; }
     input[type="number"] {
       width: 100%;
       background: var(--bg-input);
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: 10px;
       padding: 10px 12px;
       color: var(--text-primary);
-      font-size: 14px;
       font-family: inherit;
-      font-weight: 500;
+      font-size: 14px;
+      font-weight: 600;
       transition: border-color 0.2s;
+      -moz-appearance: textfield;
     }
-
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
     input[type="number"]:focus {
       outline: none;
-      border-color: var(--accent-gold);
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px var(--gold-soft);
     }
+    .has-prefix input { padding-left: 36px; }
+    .has-suffix input { padding-right: 44px; }
 
-    input.has-prefix { padding-left: 28px; }
-    input.has-suffix { padding-right: 55px; }
-
-    input::-webkit-inner-spin-button,
-    input::-webkit-outer-spin-button { -webkit-appearance: none; }
-    input[type="number"] { -moz-appearance: textfield; }
-
-    .info-box {
-      background: var(--bg-secondary);
-      border-radius: 10px;
-      padding: 12px;
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
       margin-top: 12px;
     }
+    .section-label:first-child { margin-top: 0; }
 
-    .info-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 6px 0;
-      font-size: 12px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .info-row:last-child { border-bottom: none; }
-    .info-label { color: var(--text-muted); }
-    .info-value { color: var(--text-primary); font-weight: 500; }
-
-    .comissao-box {
-      background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, var(--bg-input) 100%);
-      border: 1px solid rgba(168, 85, 247, 0.3);
+    /* ── Equipe ── */
+    .func-card {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 16px;
-      margin-top: 16px;
+      padding: 14px;
+      margin-bottom: 10px;
+      position: relative;
     }
-
-    .comissao-title {
-      font-size: 10px;
-      color: var(--accent-purple);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 600;
+    .func-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       margin-bottom: 12px;
     }
-
-    .comissao-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 6px 0;
+    .func-name {
+      font-weight: 700;
       font-size: 13px;
+      color: var(--text-primary);
     }
-
-    .comissao-row .label { color: var(--text-secondary); }
-    .comissao-row .value { font-weight: 600; }
-    .comissao-row .value.white { color: var(--text-primary); }
-    .comissao-row .value.gold { color: var(--accent-gold); }
-    .comissao-row .value.green { color: var(--accent-green); }
-    .comissao-row .value.cyan { color: var(--accent-cyan); }
-
-    .comissao-total {
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px solid rgba(168, 85, 247, 0.3);
+    .func-remove {
+      background: var(--red-soft);
+      border: 1px solid rgba(239,75,75,0.25);
+      color: var(--red);
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.2s;
+    }
+    .func-remove:hover { background: rgba(239,75,75,0.25); }
+    .func-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .func-stat {
+      background: var(--bg-card);
+      border-radius: 8px;
+      padding: 8px 10px;
+      text-align: center;
+    }
+    .func-stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .func-stat-value { font-size: 14px; font-weight: 700; margin-top: 2px; }
+    .func-total {
+      background: var(--gold-soft);
+      border: 1px solid rgba(201,151,59,0.2);
+      border-radius: 10px;
+      padding: 10px 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--gold);
+    }
+    .btn-add-func {
+      width: 100%;
+      padding: 10px;
+      background: var(--bg-input);
+      border: 2px dashed var(--border-light);
+      border-radius: 12px;
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 12px;
+    }
+    .btn-add-func:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: var(--gold-soft);
     }
 
-    .comissao-total .label { color: var(--text-primary); font-weight: 600; }
-    .comissao-total .value { font-size: 22px; font-weight: 800; color: var(--accent-green); }
-
-    .custo-equipe-box {
-      background: var(--bg-secondary);
-      border-radius: 10px;
-      padding: 12px;
-      margin-top: 12px;
-    }
-
-    .table-container {
-      overflow: hidden;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-    }
-
+    /* ── Comissão Table ── */
     .comissao-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 11px;
-    }
-
-    .comissao-table th {
-      background: var(--bg-input);
-      padding: 8px 6px;
-      text-align: left;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    .comissao-table th:nth-child(2),
-    .comissao-table th:nth-child(3) { text-align: center; }
-
-    .comissao-table td {
-      padding: 6px;
-      border-top: 1px solid var(--border);
-      color: var(--text-secondary);
-    }
-
-    .comissao-table td:nth-child(2),
-    .comissao-table td:nth-child(3) { text-align: center; }
-
-    .comissao-table tr.active {
-      background: var(--accent-gold-soft);
-    }
-
-    .comissao-table tr.active td {
-      color: var(--accent-gold);
-      font-weight: 700;
-    }
-
-    .breakeven {
-      background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
-      border: 2px solid var(--accent-gold);
-      border-radius: 16px;
-      padding: 24px;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .breakeven-title {
-      font-size: 11px;
-      color: var(--accent-gold);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-    }
-
-    .breakeven-value {
-      font-size: 48px;
-      font-weight: 800;
-      line-height: 1;
-    }
-
-    .breakeven-unit {
-      font-size: 16px;
-      color: var(--text-secondary);
-      margin-top: 6px;
-    }
-
-    .breakeven-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 1px solid var(--border);
-    }
-
-    .breakeven-item-value {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--accent-gold);
-    }
-
-    .breakeven-item-label {
-      font-size: 10px;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 6px 12px;
-      border-radius: 100px;
       font-size: 12px;
+    }
+    .comissao-table th {
+      text-align: left;
+      padding: 8px 10px;
+      background: var(--bg-input);
+      color: var(--text-secondary);
       font-weight: 600;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
-
-    .status-badge.profit { background: var(--accent-green-soft); color: var(--accent-green); }
-    .status-badge.loss { background: var(--accent-red-soft); color: var(--accent-red); }
-
-    .status-diff {
-      font-size: 16px;
+    .comissao-table th:first-child { border-radius: 8px 0 0 8px; }
+    .comissao-table th:last-child { border-radius: 0 8px 8px 0; }
+    .comissao-table td {
+      padding: 7px 10px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .comissao-table tr.active-row td {
+      color: var(--gold);
       font-weight: 700;
-      margin-top: 12px;
+      background: var(--gold-soft);
+    }
+    .comissao-table tr.active-row td:first-child { border-radius: 6px 0 0 6px; }
+    .comissao-table tr.active-row td:last-child { border-radius: 0 6px 6px 0; }
+
+    /* ── Results ── */
+    .result-box {
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+    }
+    .result-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 600;
+      opacity: 0.7;
+    }
+    .result-value {
+      font-size: 24px;
+      font-weight: 800;
+      margin-top: 4px;
+      letter-spacing: -0.5px;
+    }
+    .result-sub {
+      font-size: 11px;
+      opacity: 0.6;
+      margin-top: 4px;
     }
 
-    .status-diff.green { color: var(--accent-green); }
-    .status-diff.red { color: var(--accent-red); }
-
-    .result-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
+    /* ── DRE ── */
+    .dre-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 9px 0;
+      font-size: 13px;
     }
+    .dre-row + .dre-row { border-top: 1px solid var(--border); }
+    .dre-highlight {
+      border-radius: 10px;
+      padding: 10px 14px !important;
+      margin: 4px -6px;
+      border: none !important;
+    }
+    .dre-row.red span:last-child { color: var(--red); }
 
-    .result-card {
-      background: var(--bg-secondary);
+    /* ── Break-even cards ── */
+    .be-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+    .be-card {
+      background: var(--bg-input);
       border-radius: 12px;
       padding: 14px;
       text-align: center;
     }
+    .be-value { font-size: 28px; font-weight: 800; color: var(--text-primary); }
+    .be-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
 
-    .result-card.ebitda { border: 1px solid rgba(245, 158, 11, 0.5); }
-    .result-card.lucro-pos { border: 1px solid rgba(34, 197, 94, 0.5); }
-    .result-card.lucro-neg { border: 1px solid rgba(239, 68, 68, 0.5); }
-    .result-card.gold { background: var(--accent-gold-soft); border: 1px solid rgba(245, 158, 11, 0.5); }
-    .result-card.blue { background: var(--accent-blue-soft); border: 1px solid rgba(59, 130, 246, 0.5); }
+    /* ── Status badge ── */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .status-lucrativo { background: var(--green-soft); color: var(--green); border: 1px solid rgba(45,212,122,0.25); }
+    .status-prejuizo { background: var(--red-soft); color: var(--red); border: 1px solid rgba(239,75,75,0.25); }
 
-    .result-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
-    .result-value { font-size: 22px; font-weight: 800; margin-top: 4px; }
-    .result-value.gold { color: var(--accent-gold); }
-    .result-value.blue { color: var(--accent-blue); }
-    .result-value.green { color: var(--accent-green); }
-    .result-value.red { color: var(--accent-red); }
-    .result-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
-
-    .dre-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-      font-size: 13px;
-      border-bottom: 1px solid var(--border);
+    /* ── ROI Grid ── */
+    .roi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .roi-card {
+      background: var(--bg-input);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+    .roi-card-accent {
+      border: 1px solid;
     }
 
-    .dre-row:last-child { border-bottom: none; }
-    .dre-row.highlight { background: var(--accent-gold-soft); margin: 4px -12px; padding: 8px 12px; border-radius: 8px; border: none; }
-    .dre-row.highlight-green { background: var(--accent-green-soft); margin: 4px -12px; padding: 8px 12px; border-radius: 8px; border: none; }
-    .dre-row.highlight-red { background: var(--accent-red-soft); margin: 4px -12px; padding: 8px 12px; border-radius: 8px; border: none; }
-    .dre-row.small { font-size: 11px; padding: 4px 0; }
-    .dre-row .red { color: var(--accent-red); }
-    .dre-row .gold { color: var(--accent-gold); font-weight: 600; }
-    .dre-row .green { color: var(--accent-green); font-weight: 700; }
+    /* ── Progress bar ── */
+    .progress-wrap { margin-top: 14px; }
+    .progress-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
+    .progress-bar { height: 6px; background: var(--bg-input); border-radius: 100px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 100px; transition: width 0.4s ease; }
 
-    .roi-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
+    /* ── Info box ── */
+    .info-box {
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 12px;
       margin-top: 12px;
     }
 
-    .roi-box {
-      background: var(--bg-secondary);
-      border-radius: 10px;
-      padding: 12px;
-      text-align: center;
-    }
-
-    .roi-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
-    .roi-value { font-size: 18px; font-weight: 700; margin-top: 4px; }
-
+    /* ── Footer ── */
     .footer {
       text-align: center;
-      padding: 24px 0;
+      margin-top: 40px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
       color: var(--text-muted);
       font-size: 11px;
-      margin-top: 32px;
-      border-top: 1px solid var(--border);
+      line-height: 1.8;
     }
-
     .footer strong { color: var(--text-secondary); }
 
-    @media (max-width: 768px) {
-      .form-grid, .form-grid-3 { grid-template-columns: 1fr; }
-      .result-grid, .roi-grid, .breakeven-grid { grid-template-columns: 1fr; }
-      .breakeven-value { font-size: 36px; }
+    /* ── Custo Var Unitário ── */
+    .custo-var-display {
+      background: var(--orange-soft);
+      border: 1px solid rgba(240,145,58,0.2);
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+    }
+    .custo-var-display span:first-child { font-size: 12px; color: var(--orange); font-weight: 500; }
+    .custo-var-display span:last-child { font-size: 15px; color: var(--orange); font-weight: 800; }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .be-grid { grid-template-columns: 1fr; }
+      .meta-banner { flex-direction: column; }
+      .meta-level { border-right: none; border-bottom: 1px solid var(--border); }
+      .meta-level:last-child { border-bottom: none; }
+      .grid-3 { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <header class="header">
+    <!-- Header -->
+    <div class="header">
       <div class="logo">MEMO CASE</div>
-      <p class="subtitle">Simulador Financeiro — Modelo Kiosk Premium</p>
-      <span class="version">✓ v4.0 — Comissão Escalonada</span>
-    </header>
+      <div class="subtitle">Simulador Financeiro — Modelo Kiosk Premium</div>
+      <div class="version-badge">✓ v7.0 — Equipe Flexível + Faixas de Meta</div>
+    </div>
 
+    <!-- Meta Banner -->
+    <div class="meta-banner" id="metaBanner">
+      <div class="meta-level meta-sobrevivencia" id="metaSobrevivencia">
+        <div class="meta-icon">🔴</div>
+        <div class="meta-name">Sobrevivência</div>
+        <div class="meta-range">≤ 10/dia</div>
+      </div>
+      <div class="meta-level meta-base" id="metaBase">
+        <div class="meta-icon">🟡</div>
+        <div class="meta-name">Base</div>
+        <div class="meta-range">20/dia</div>
+      </div>
+      <div class="meta-level meta-meta" id="metaMeta">
+        <div class="meta-icon">🟢</div>
+        <div class="meta-name">Meta</div>
+        <div class="meta-range">30/dia</div>
+      </div>
+      <div class="meta-level meta-stretch" id="metaStretch">
+        <div class="meta-icon">🔵</div>
+        <div class="meta-name">Stretch</div>
+        <div class="meta-range">40+/dia</div>
+      </div>
+    </div>
+
+    <!-- Main Grid -->
     <div class="main-grid">
-      <!-- Coluna 1: Inputs Principais -->
-      <div>
+      <!-- ═══ COLUNA ESQUERDA — INPUTS ═══ -->
+      <div style="display:flex;flex-direction:column;gap:20px;">
+
         <!-- Vendas -->
         <div class="card">
           <div class="card-header">
-            <div class="card-icon icon-green">💰</div>
+            <div class="card-icon" style="background:var(--green-soft);">💰</div>
             <div>
               <div class="card-title">Vendas & Produto</div>
               <div class="card-subtitle">Configure preço e volume</div>
             </div>
           </div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label">🏷️ Preço de Venda</label>
-              <div class="input-wrap">
+          <div class="grid-2">
+            <div class="input-group">
+              <div class="input-label">🏷️ Preço de Venda</div>
+              <div class="input-wrap has-prefix">
                 <span class="input-prefix">R$</span>
-                <input type="number" id="precoVenda" value="99" class="has-prefix" oninput="calcular()">
+                <input type="number" id="precoVenda" value="129" step="1" min="0" oninput="calcular()">
               </div>
             </div>
-            <div class="form-group">
-              <label class="form-label">📦 Capas / Dia</label>
-              <div class="input-wrap">
-                <input type="number" id="capasPerDay" value="25" class="has-suffix" oninput="calcular()">
+            <div class="input-group">
+              <div class="input-label">📦 Capas / Dia</div>
+              <div class="input-wrap has-suffix">
+                <input type="number" id="capasPerDay" value="25" step="1" min="0" oninput="calcular()">
                 <span class="input-suffix">/dia</span>
               </div>
             </div>
           </div>
-          <div class="info-box">
-            <div class="info-row">
-              <span class="info-label">Vendas / Mês (Kiosk)</span>
-              <span class="info-value" id="vendasMes" style="color: var(--accent-gold); font-weight: 700;">750</span>
+          <div class="func-stats" style="margin-top:14px;">
+            <div class="func-stat">
+              <div class="func-stat-label">Vendas / Mês</div>
+              <div class="func-stat-value" id="vendasMes">750</div>
             </div>
-            <div class="info-row">
-              <span class="info-label">Vendas / Funcionário</span>
-              <span class="info-value" id="vendasFunc">375</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Faturamento Bruto</span>
-              <span class="info-value" id="faturamentoBruto">R$ 74.250</span>
+            <div class="func-stat">
+              <div class="func-stat-label">Faturamento Bruto</div>
+              <div class="func-stat-value" id="faturamentoBruto" style="color:var(--green);">R$ 96.750</div>
             </div>
           </div>
         </div>
 
-        <!-- Funcionários -->
+        <!-- Equipe -->
         <div class="card">
           <div class="card-header">
-            <div class="card-icon icon-purple">👥</div>
+            <div class="card-icon" style="background:var(--purple-soft);">👥</div>
             <div>
               <div class="card-title">Equipe & Comissão</div>
-              <div class="card-subtitle">2 funcionários + folguista (sócio)</div>
+              <div class="card-subtitle">Adicione funcionários e defina salários</div>
             </div>
           </div>
-          <div class="form-group">
-            <label class="form-label">💵 Salário Fixo (por funcionário)</label>
-            <div class="input-wrap">
-              <span class="input-prefix">R$</span>
-              <input type="number" id="salarioFixo" value="2000" step="100" class="has-prefix" oninput="calcular()">
-            </div>
-          </div>
-
-          <div class="comissao-box">
-            <div class="comissao-title">📊 Cálculo Automático por Funcionário</div>
-            <div class="comissao-row">
-              <span class="label">Vendas atribuídas</span>
-              <span class="value white" id="vendasAtribuidas">375 capas</span>
-            </div>
-            <div class="comissao-row">
-              <span class="label">Faixa de comissão</span>
-              <span class="value gold" id="faixaComissao">2%</span>
-            </div>
-            <div class="comissao-row">
-              <span class="label">Salário Fixo</span>
-              <span class="value white" id="salarioFixoDisplay">R$ 2.000,00</span>
-            </div>
-            <div class="comissao-row">
-              <span class="label">Comissão</span>
-              <span class="value green" id="comissaoValor">+ R$ 742,50</span>
-            </div>
-            <div class="comissao-row">
-              <span class="label">Bônus Meta</span>
-              <span class="value cyan" id="bonusValor">+ R$ 500,00</span>
-            </div>
-            <div class="comissao-total">
-              <span class="label">Salário Total / Func.</span>
-              <span class="value" id="salarioTotal">R$ 3.242,50</span>
-            </div>
-          </div>
-
-          <div class="custo-equipe-box">
-            <div class="info-row" style="border: none; padding: 0;">
-              <span class="info-label">Custo Total (2 funcionários)</span>
-              <span class="info-value" id="custoEquipe" style="color: var(--accent-red); font-weight: 700;">R$ 6.485,00</span>
-            </div>
+          <div id="funcContainer"></div>
+          <button class="btn-add-func" onclick="addFuncionario()">+ Adicionar Funcionário</button>
+          <div class="func-total" id="custoTotalEquipe">
+            <span>Custo Total Equipe</span>
+            <span id="custoEquipeValor">R$ 0</span>
           </div>
         </div>
 
         <!-- Custos Variáveis -->
         <div class="card">
           <div class="card-header">
-            <div class="card-icon icon-orange">📊</div>
+            <div class="card-icon" style="background:var(--orange-soft);">📊</div>
             <div>
               <div class="card-title">Custos Variáveis</div>
               <div class="card-subtitle">Por unidade vendida</div>
             </div>
           </div>
-          <div class="form-grid form-grid-3">
-            <div class="form-group">
-              <label class="form-label">📱 Capinha</label>
-              <div class="input-wrap">
+          <div class="grid-2">
+            <div class="input-group">
+              <div class="input-label">📱 Capinha</div>
+              <div class="input-wrap has-prefix">
                 <span class="input-prefix">R$</span>
-                <input type="number" id="custoCapinha" value="16.71" step="0.01" class="has-prefix" oninput="calcular()">
+                <input type="number" id="custoCapinha" value="16.71" step="0.01" min="0" oninput="calcular()">
               </div>
             </div>
-            <div class="form-group">
-              <label class="form-label">🎨 Tinta</label>
-              <div class="input-wrap">
+            <div class="input-group">
+              <div class="input-label">🎨 Tinta</div>
+              <div class="input-wrap has-prefix">
                 <span class="input-prefix">R$</span>
-                <input type="number" id="custoTinta" value="0.45" step="0.01" class="has-prefix" oninput="calcular()">
+                <input type="number" id="custoTinta" value="0.45" step="0.01" min="0" oninput="calcular()">
               </div>
             </div>
-            <div class="form-group">
-              <label class="form-label">🔧 Manutenção</label>
-              <div class="input-wrap">
+            <div class="input-group">
+              <div class="input-label">🔧 Manutenção</div>
+              <div class="input-wrap has-prefix">
                 <span class="input-prefix">R$</span>
-                <input type="number" id="custoManutencao" value="1.50" step="0.01" class="has-prefix" oninput="calcular()">
+                <input type="number" id="custoManutencao" value="1.50" step="0.01" min="0" oninput="calcular()">
+              </div>
+            </div>
+            <div class="input-group">
+              <div class="input-label">🛍️ Embalagem / Sacola</div>
+              <div class="input-wrap has-prefix">
+                <span class="input-prefix">R$</span>
+                <input type="number" id="custoEmbalagem" value="3.00" step="0.01" min="0" oninput="calcular()">
               </div>
             </div>
           </div>
-          <div class="info-box" style="text-align: center;">
-            <span class="info-label">Custo variável unitário: </span>
-            <span class="info-value" id="custoVarUnit" style="color: var(--accent-gold);">R$ 18,66</span>
+          <div class="custo-var-display">
+            <span>Custo variável unitário:</span>
+            <span id="custoVarUnit">R$ 21,66</span>
           </div>
         </div>
-      </div>
 
-      <!-- Coluna 2: Custos Fixos e CAPEX -->
-      <div>
         <!-- Custos Fixos -->
         <div class="card">
           <div class="card-header">
-            <div class="card-icon icon-blue">🏢</div>
+            <div class="card-icon" style="background:var(--blue-soft);">🏢</div>
             <div>
               <div class="card-title">Custos Fixos Mensais</div>
-              <div class="card-subtitle">Despesas operacionais</div>
+              <div class="card-subtitle">Despesas operacionais (sem equipe)</div>
             </div>
           </div>
-
-          <div class="section-title">Estrutura</div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label">🏬 Aluguel Kiosk</label>
-              <div class="input-wrap">
+          <div class="section-label">Estrutura</div>
+          <div class="grid-2">
+            <div class="input-group">
+              <div class="input-label">🏬 Aluguel Kiosk</div>
+              <div class="input-wrap has-prefix">
                 <span class="input-prefix">R$</span>
-                <input type="number" id="aluguel" value="12000" step="100" class="has-prefix" oninput="calcular()">
+                <input type="number" id="aluguel" value="12000" step="100" min="0" oninput="calcular()">
               </div>
             </div>
-            <div class="form-group">
-              <label class="form-label">⚡ Energia + Internet</label>
-              <div class="input-wrap">
+            <div class="input-group">
+              <div class="input-label">⚡ Energia + Internet</div>
+              <div class="input-wrap has-prefix">
                 <span class="input-prefix">R$</span>
-                <input type="number" id="energia" value="600" step="50" class="has-prefix" oninput="calcular()">
-              </div>
-            </div>
-          </div>
-
-          <div class="section-title">Operação</div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label">💻 Sistema / Suporte</label>
-              <div class="input-wrap">
-                <span class="input-prefix">R$</span>
-                <input type="number" id="sistema" value="400" step="50" class="has-prefix" oninput="calcular()">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">📋 Contabilidade</label>
-              <div class="input-wrap">
-                <span class="input-prefix">R$</span>
-                <input type="number" id="contabilidade" value="600" step="50" class="has-prefix" oninput="calcular()">
+                <input type="number" id="energia" value="600" step="50" min="0" oninput="calcular()">
               </div>
             </div>
           </div>
-
-          <div class="section-title">Marketing</div>
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label">📱 Tráfego Pago</label>
-              <div class="input-wrap">
+          <div class="section-label">Operação</div>
+          <div class="grid-2">
+            <div class="input-group">
+              <div class="input-label">💻 Sistema / Suporte</div>
+              <div class="input-wrap has-prefix">
                 <span class="input-prefix">R$</span>
-                <input type="number" id="trafego" value="3000" step="100" class="has-prefix" oninput="calcular()">
+                <input type="number" id="sistema" value="400" step="50" min="0" oninput="calcular()">
               </div>
             </div>
-            <div class="form-group">
-              <label class="form-label">🎬 Agência</label>
-              <div class="input-wrap">
+            <div class="input-group">
+              <div class="input-label">📋 Contabilidade</div>
+              <div class="input-wrap has-prefix">
                 <span class="input-prefix">R$</span>
-                <input type="number" id="agencia" value="3000" step="100" class="has-prefix" oninput="calcular()">
+                <input type="number" id="contabilidade" value="600" step="50" min="0" oninput="calcular()">
               </div>
             </div>
           </div>
-
-          <div class="info-box">
-            <div class="info-row">
-              <span class="info-label">Custos Fixos (s/ equipe)</span>
-              <span class="info-value" id="custosFixosSemEquipe">R$ 19.600</span>
+          <div class="section-label">Marketing</div>
+          <div class="grid-2">
+            <div class="input-group">
+              <div class="input-label">📱 Tráfego Pago</div>
+              <div class="input-wrap has-prefix">
+                <span class="input-prefix">R$</span>
+                <input type="number" id="trafego" value="3000" step="100" min="0" oninput="calcular()">
+              </div>
             </div>
-            <div class="info-row">
-              <span class="info-label">Equipe (2 func.)</span>
-              <span class="info-value" id="custoEquipeResumo">R$ 6.485</span>
+            <div class="input-group">
+              <div class="input-label">🎬 Agência</div>
+              <div class="input-wrap has-prefix">
+                <span class="input-prefix">R$</span>
+                <input type="number" id="agencia" value="3000" step="100" min="0" oninput="calcular()">
+              </div>
             </div>
-            <div class="info-row" style="border-top: 1px solid var(--border); padding-top: 8px; margin-top: 4px;">
-              <span class="info-label" style="color: var(--accent-blue); font-weight: 600;">Total Custos Fixos</span>
-              <span class="info-value" id="custosFixosTotal" style="color: var(--accent-blue); font-weight: 700;">R$ 26.085</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;margin-top:14px;">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-secondary);padding:6px 0;">
+              <span>Custos Fixos (s/ equipe)</span>
+              <span id="custosFixosSemEquipe" style="font-weight:700;">R$ 19.600</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--purple);padding:6px 0;">
+              <span>Equipe</span>
+              <span id="custosEquipeResumo" style="font-weight:700;">R$ 0</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-primary);padding:8px 0;border-top:1px solid var(--border);">
+              <span style="font-weight:700;">Total Custos Fixos</span>
+              <span id="custosFixosTotal" style="font-weight:800;">R$ 19.600</span>
             </div>
           </div>
         </div>
@@ -690,421 +710,592 @@
         <!-- CAPEX -->
         <div class="card">
           <div class="card-header">
-            <div class="card-icon icon-cyan">💎</div>
+            <div class="card-icon" style="background:var(--cyan-soft);">💎</div>
             <div>
               <div class="card-title">CAPEX & Financiamento</div>
               <div class="card-subtitle">Investimento inicial</div>
             </div>
           </div>
-
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label">🖨️ Máquina</label>
-              <div class="input-wrap">
+          <div class="grid-2">
+            <div class="input-group">
+              <div class="input-label">🖨️ Máquina</div>
+              <div class="input-wrap has-prefix">
                 <span class="input-prefix">R$</span>
-                <input type="number" id="capexMaquina" value="70757" step="1000" class="has-prefix" oninput="calcular()">
+                <input type="number" id="capexMaquina" value="70757" step="100" min="0" oninput="calcular()">
               </div>
             </div>
-            <div class="form-group">
-              <label class="form-label">🏗️ Estrutura</label>
-              <div class="input-wrap">
+            <div class="input-group">
+              <div class="input-label">🏗️ Estrutura</div>
+              <div class="input-wrap has-prefix">
                 <span class="input-prefix">R$</span>
-                <input type="number" id="capexEstrutura" value="40000" step="1000" class="has-prefix" oninput="calcular()">
+                <input type="number" id="capexEstrutura" value="40000" step="100" min="0" oninput="calcular()">
               </div>
             </div>
-            <div class="form-group">
-              <label class="form-label">📦 Estoque</label>
-              <div class="input-wrap">
-                <input type="number" id="estoqueInicial" value="2000" step="100" class="has-suffix" oninput="calcular()">
+            <div class="input-group">
+              <div class="input-label">📦 Estoque Inicial</div>
+              <div class="input-wrap has-suffix">
+                <input type="number" id="estoqueInicial" value="2000" step="100" min="0" oninput="calcular()">
                 <span class="input-suffix">un</span>
               </div>
             </div>
-            <div class="form-group">
-              <label class="form-label">🎨 Comunicação</label>
-              <div class="input-wrap">
+            <div class="input-group">
+              <div class="input-label">🎨 Comunicação</div>
+              <div class="input-wrap has-prefix">
                 <span class="input-prefix">R$</span>
-                <input type="number" id="capexComunicacao" value="5000" step="500" class="has-prefix" oninput="calcular()">
+                <input type="number" id="capexComunicacao" value="10000" step="100" min="0" oninput="calcular()">
               </div>
             </div>
           </div>
-
-          <div class="section-title">Financiamento</div>
-          <div class="form-grid form-grid-3">
-            <div class="form-group">
-              <label class="form-label">🏦 Juros</label>
-              <div class="input-wrap">
-                <input type="number" id="taxaJuros" value="5" step="0.5" class="has-suffix" oninput="calcular()">
+          <div class="section-label">Financiamento</div>
+          <div class="grid-3">
+            <div class="input-group">
+              <div class="input-label">🏦 Juros</div>
+              <div class="input-wrap has-suffix">
+                <input type="number" id="taxaJuros" value="5" step="0.5" min="0" oninput="calcular()">
                 <span class="input-suffix">% a.a.</span>
               </div>
             </div>
-            <div class="form-group">
-              <label class="form-label">📅 Vida Máq.</label>
-              <div class="input-wrap">
-                <input type="number" id="vidaUtilMaquina" value="60" step="12" min="12" class="has-suffix" oninput="calcular()">
+            <div class="input-group">
+              <div class="input-label">📅 Vida Máq.</div>
+              <div class="input-wrap has-suffix">
+                <input type="number" id="vidaUtilMaquina" value="60" step="6" min="1" oninput="calcular()">
                 <span class="input-suffix">meses</span>
               </div>
             </div>
-            <div class="form-group">
-              <label class="form-label">📅 Vida Estr.</label>
-              <div class="input-wrap">
-                <input type="number" id="vidaUtilEstrutura" value="60" step="12" min="12" class="has-suffix" oninput="calcular()">
+            <div class="input-group">
+              <div class="input-label">📅 Vida Estr.</div>
+              <div class="input-wrap has-suffix">
+                <input type="number" id="vidaUtilEstrutura" value="60" step="6" min="1" oninput="calcular()">
                 <span class="input-suffix">meses</span>
               </div>
             </div>
           </div>
-
-          <div class="info-box">
-            <div class="info-row">
-              <span class="info-label">Depreciação/mês</span>
-              <span class="info-value" id="depreciacaoMes">R$ 1.846</span>
+          <div style="display:flex;gap:10px;margin-top:14px;">
+            <div class="func-stat" style="flex:1;">
+              <div class="func-stat-label">Depreciação/mês</div>
+              <div class="func-stat-value" id="depreciacaoMes">R$ 1.846</div>
             </div>
-            <div class="info-row">
-              <span class="info-label">Juros/mês</span>
-              <span class="info-value" id="jurosMes">R$ 622</span>
+            <div class="func-stat" style="flex:1;">
+              <div class="func-stat-label">Juros/mês</div>
+              <div class="func-stat-value" id="jurosMes">R$ 622</div>
             </div>
-            <div class="info-row" style="border-top: 1px solid var(--border); padding-top: 8px; margin-top: 4px;">
-              <span class="info-label" style="color: var(--accent-cyan); font-weight: 600;">CAPEX Total</span>
-              <span class="info-value" id="capexTotal" style="color: var(--accent-cyan); font-weight: 700;">R$ 149.177</span>
+            <div class="func-stat" style="flex:1;">
+              <div class="func-stat-label">CAPEX Total</div>
+              <div class="func-stat-value" id="capexTotal" style="color:var(--cyan);">R$ 149.177</div>
             </div>
           </div>
         </div>
 
-        <!-- Tabela de Comissões -->
+        <!-- Tabela Comissões -->
         <div class="card">
           <div class="card-header">
-            <div class="card-icon icon-gold">📈</div>
+            <div class="card-icon" style="background:var(--gold-soft);">📈</div>
             <div>
               <div class="card-title">Tabela de Comissões</div>
-              <div class="card-subtitle">Por funcionário</div>
+              <div class="card-subtitle">Por funcionário (vendas atribuídas)</div>
             </div>
           </div>
-          <div class="table-container">
-            <table class="comissao-table" id="tabelaComissoes">
-              <thead>
-                <tr>
-                  <th>Vendas</th>
-                  <th>%</th>
-                  <th>Bônus</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr data-min="0" data-max="299"><td>&lt; 300</td><td>0%</td><td>R$ 0</td></tr>
-                <tr data-min="300" data-max="349"><td>300-349</td><td>1%</td><td>R$ 250</td></tr>
-                <tr data-min="350" data-max="399"><td>350-399</td><td>1,5%</td><td>R$ 250</td></tr>
-                <tr data-min="400" data-max="449"><td>400-449</td><td>2%</td><td>R$ 500</td></tr>
-                <tr data-min="450" data-max="499"><td>450-499</td><td>2,5%</td><td>R$ 500</td></tr>
-                <tr data-min="500" data-max="549"><td>500-549</td><td>3%</td><td>R$ 750</td></tr>
-                <tr data-min="550" data-max="599"><td>550-599</td><td>3,5%</td><td>R$ 750</td></tr>
-                <tr data-min="600" data-max="649"><td>600-649</td><td>4%</td><td>R$ 1.000</td></tr>
-                <tr data-min="650" data-max="699"><td>650-699</td><td>4,5%</td><td>R$ 1.000</td></tr>
-                <tr data-min="700" data-max="749"><td>700-749</td><td>5%</td><td>R$ 1.250</td></tr>
-                <tr data-min="750" data-max="99999"><td>750+</td><td>5,5%</td><td>R$ 1.500</td></tr>
-              </tbody>
-            </table>
-          </div>
+          <table class="comissao-table" id="comissaoTable">
+            <thead>
+              <tr><th>Vendas</th><th>%</th><th>Bônus</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
         </div>
       </div>
 
-      <!-- Coluna 3: Resultados -->
-      <div>
-        <!-- Break-even -->
-        <div class="breakeven">
-          <div class="breakeven-title">🎯 Ponto de Equilíbrio</div>
-          <div class="breakeven-value" id="breakEvenCapas">386</div>
-          <div class="breakeven-unit">capas / mês para empatar</div>
-          <div class="breakeven-grid">
+      <!-- ═══ COLUNA DIREITA — RESULTADOS ═══ -->
+      <div style="display:flex;flex-direction:column;gap:20px;">
+
+        <!-- Break-Even -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon" style="background:var(--gold-soft);">🎯</div>
             <div>
-              <div class="breakeven-item-value" id="breakEvenDia">~13</div>
-              <div class="breakeven-item-label">capas / dia</div>
+              <div class="card-title">Ponto de Equilíbrio</div>
+              <div class="card-subtitle">Break-even mensal</div>
             </div>
-            <div>
-              <div class="breakeven-item-value" id="breakEvenFaturamento">R$ 38.214</div>
-              <div class="breakeven-item-label">faturamento mín.</div>
+          </div>
+          <div class="be-grid">
+            <div class="be-card">
+              <div class="be-value" id="beCapas">386</div>
+              <div class="be-label">capas / mês para empatar</div>
+            </div>
+            <div class="be-card">
+              <div class="be-value" id="beDia">~13</div>
+              <div class="be-label">capas / dia</div>
+            </div>
+            <div class="be-card">
+              <div class="be-value" id="beFaturamento" style="font-size:20px;">R$ 38.214</div>
+              <div class="be-label">faturamento mín.</div>
             </div>
           </div>
         </div>
 
-        <!-- Status -->
-        <div class="card" style="text-align: center;">
-          <div class="card-header" style="justify-content: center;">
-            <div class="card-icon icon-purple">📈</div>
-            <div style="text-align: left;">
+        <!-- Situação Atual -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon" style="background:var(--purple-soft);">📈</div>
+            <div>
               <div class="card-title">Situação Atual</div>
               <div class="card-subtitle">Com base nos parâmetros</div>
             </div>
           </div>
-          <span class="status-badge profit" id="statusBadge">✓ Operação Lucrativa</span>
-          <div class="status-diff green" id="statusDiff">+364 capas acima do break-even</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span class="status-badge" id="statusBadge">
+              <span id="statusIcon">✓</span> <span id="statusText">Operação Lucrativa</span>
+            </span>
+            <span id="statusDiff" style="font-size:13px;font-weight:600;"></span>
+          </div>
         </div>
 
-        <!-- EBITDA vs Lucro -->
+        <!-- Resultado Financeiro -->
         <div class="card">
           <div class="card-header">
-            <div class="card-icon icon-gold">📊</div>
+            <div class="card-icon" style="background:var(--green-soft);">📊</div>
             <div>
               <div class="card-title">Resultado Financeiro</div>
               <div class="card-subtitle">EBITDA e Lucro Líquido</div>
             </div>
           </div>
-          <div class="result-grid">
-            <div class="result-card ebitda">
-              <div class="result-label">EBITDA</div>
-              <div class="result-value gold" id="ebitdaCard">R$ 24.368</div>
-              <div class="result-sub" id="ebitdaPercent">32,8%</div>
+          <div class="grid-2">
+            <div class="result-box" style="background:var(--gold-soft);border:1px solid rgba(201,151,59,0.2);">
+              <div class="result-label" style="color:var(--gold);">EBITDA</div>
+              <div class="result-value" style="color:var(--gold);" id="ebitdaValor">R$ 24.368</div>
+              <div class="result-sub" style="color:var(--gold);" id="ebitdaPct">32,8%</div>
             </div>
-            <div class="result-card lucro-pos" id="lucroCardContainer">
-              <div class="result-label">Lucro Líquido</div>
-              <div class="result-value green" id="lucroCard">R$ 21.900</div>
-              <div class="result-sub" id="lucroPercent">29,5%</div>
+            <div class="result-box" id="lucroBox" style="background:var(--green-soft);border:1px solid rgba(45,212,122,0.2);">
+              <div class="result-label" id="lucroLabel" style="color:var(--green);">Lucro Líquido</div>
+              <div class="result-value" id="lucroValor" style="color:var(--green);">R$ 21.900</div>
+              <div class="result-sub" id="lucroPct" style="color:var(--green);">29,5%</div>
             </div>
+          </div>
+          <div class="info-box" style="background:var(--cyan-soft);border:1px solid rgba(43,197,217,0.15);">
+            <div style="font-weight:700;color:var(--cyan);font-size:11px;margin-bottom:4px;">💡 Diferença EBITDA → Lucro</div>
+            <div style="color:var(--text-secondary);font-size:12px;" id="diffEbitdaLucro"></div>
+          </div>
+          <div class="func-stat" style="margin-top:10px;">
+            <div class="func-stat-label">Simples Nacional (Anexo I)</div>
+            <div class="func-stat-value" style="color:var(--blue);" id="simplesAliquota">8,2%</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:2px;" id="simplesFaixa">R$ 720k – R$ 1.8M anual</div>
           </div>
         </div>
 
         <!-- DRE -->
         <div class="card">
           <div class="card-header">
-            <div class="card-icon icon-red">📋</div>
+            <div class="card-icon" style="background:var(--red-soft);">📋</div>
             <div>
               <div class="card-title">DRE Mensal</div>
               <div class="card-subtitle">Demonstrativo resumido</div>
             </div>
           </div>
-          <div class="dre-row"><span><strong>Receita Bruta</strong></span><span id="dreReceitaBruta"><strong>R$ 74.250</strong></span></div>
-          <div class="dre-row small"><span class="red">(-) Impostos</span><span class="red" id="dreImpostos">- R$ 6.089</span></div>
-          <div class="dre-row small"><span class="red">(-) Custos Variáveis</span><span class="red" id="dreCustosVar">- R$ 13.995</span></div>
-          <div class="dre-row"><span><strong>Margem Contribuição</strong></span><span id="dreMargem"><strong>R$ 54.166</strong></span></div>
-          <div class="dre-row small"><span class="red">(-) Custos Fixos</span><span class="red" id="dreCustosFixos">- R$ 19.600</span></div>
-          <div class="dre-row small"><span class="red">(-) Equipe (2 func.)</span><span class="red" id="dreEquipe">- R$ 6.485</span></div>
-          <div class="dre-row highlight"><span class="gold"><strong>EBITDA</strong></span><span class="gold" id="dreEbitda"><strong>R$ 24.368</strong></span></div>
-          <div class="dre-row small"><span class="red">(-) D&A + Juros</span><span class="red" id="dreDAJuros">- R$ 2.468</span></div>
-          <div class="dre-row highlight-green" id="dreLucroRow"><span class="green" id="dreLucroLabel"><strong>LUCRO LÍQUIDO</strong></span><span class="green" id="dreLucro"><strong>R$ 21.900</strong></span></div>
+          <div>
+            <div class="dre-row"><span style="font-weight:700;">Receita Bruta</span><span style="font-weight:700;" id="dreReceita">R$ 74.250</span></div>
+            <div class="dre-row red"><span>(-) Impostos</span><span id="dreImpostos">- R$ 6.089</span></div>
+            <div class="dre-row red"><span>(-) Custos Variáveis</span><span id="dreCustosVar">- R$ 13.995</span></div>
+            <div class="dre-row"><span style="font-weight:700;">Margem Contribuição</span><span style="font-weight:700;" id="dreMargem">R$ 54.166</span></div>
+            <div class="dre-row red"><span>(-) Custos Fixos</span><span id="dreCustosFixos">- R$ 19.600</span></div>
+            <div class="dre-row red"><span>(-) Equipe</span><span id="dreEquipe">- R$ 6.485</span></div>
+            <div class="dre-row dre-highlight" style="background:var(--gold-soft);"><span style="font-weight:800;color:var(--gold);">EBITDA</span><span style="font-weight:800;color:var(--gold);" id="dreEbitda">R$ 24.368</span></div>
+            <div class="dre-row red" style="font-size:12px;padding-left:16px;"><span>(-) D&A + Juros</span><span id="dreDA">- R$ 2.468</span></div>
+            <div class="dre-row dre-highlight" id="dreLucroRow" style="background:var(--green-soft);"><span style="font-weight:800;" id="dreLucroLabel">LUCRO LÍQUIDO</span><span style="font-weight:800;" id="dreLucroValor">R$ 21.900</span></div>
+          </div>
         </div>
 
-        <!-- Payback -->
+        <!-- ROI & Payback -->
         <div class="card">
           <div class="card-header">
-            <div class="card-icon icon-cyan">💎</div>
+            <div class="card-icon" style="background:var(--cyan-soft);">💎</div>
             <div>
               <div class="card-title">ROI & Payback</div>
               <div class="card-subtitle">Retorno do investimento</div>
             </div>
           </div>
-          <div class="result-grid">
-            <div class="result-card gold">
-              <div class="result-label">CAPEX</div>
-              <div class="result-value gold" id="capexTotalCard">R$ 149.177</div>
+          <div class="roi-grid">
+            <div class="roi-card roi-card-accent" style="border-color:rgba(201,151,59,0.3);background:var(--gold-soft);">
+              <div class="result-label" style="color:var(--gold);">CAPEX</div>
+              <div class="result-value" style="font-size:20px;color:var(--gold);" id="roiCapex">R$ 149.177</div>
             </div>
-            <div class="result-card blue">
-              <div class="result-label">Payback</div>
-              <div class="result-value blue" id="paybackCard">~6,8m</div>
+            <div class="roi-card roi-card-accent" style="border-color:rgba(59,139,246,0.3);background:var(--blue-soft);">
+              <div class="result-label" style="color:var(--blue);">Payback</div>
+              <div class="result-value" style="font-size:20px;color:var(--blue);" id="roiPayback">~6,8m</div>
+            </div>
+            <div class="roi-card">
+              <div class="func-stat-label">ROI Mensal</div>
+              <div class="func-stat-value" id="roiMensal">14,7%</div>
+            </div>
+            <div class="roi-card">
+              <div class="func-stat-label">ROI Anual</div>
+              <div class="func-stat-value" id="roiAnual">176%</div>
             </div>
           </div>
-          <div class="roi-grid">
-            <div class="roi-box">
-              <div class="roi-label">ROI Mensal</div>
-              <div class="roi-value" id="roiMensal">14,7%</div>
+          <div class="progress-wrap">
+            <div class="progress-labels">
+              <span>Progresso para Payback</span>
+              <span id="progressLabel" style="color:var(--gold);">14,7% / mês</span>
             </div>
-            <div class="roi-box">
-              <div class="roi-label">ROI Anual</div>
-              <div class="roi-value" id="roiAnual">176%</div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progressFill" style="width:14.7%;background:var(--green);"></div>
             </div>
           </div>
         </div>
+
       </div>
     </div>
 
-    <footer class="footer">
-      <strong>MEMO CASE</strong> — Simulador Financeiro v4.0 Comissão Escalonada<br>
-      2 funcionários por kiosk • Folguista = Sócio • Comissão por faixa de vendas
-    </footer>
+    <!-- Footer -->
+    <div class="footer">
+      <strong>MEMO CASE</strong> — Simulador Financeiro v7.0 Equipe Flexível<br>
+      Equipe dinâmica • Comissão escalonada • Faixas de meta • Embalagem incluída
+    </div>
   </div>
 
   <script>
-    const numFuncionarios = 2;
+    // ── Tabela de Comissão (por funcionário) ──
+    const COMISSAO_FAIXAS = [
+      { min: 0,   max: 299, pct: 0,    bonus: 0 },
+      { min: 300, max: 349, pct: 1,    bonus: 250 },
+      { min: 350, max: 399, pct: 1.5,  bonus: 250 },
+      { min: 400, max: 449, pct: 2,    bonus: 500 },
+      { min: 450, max: 499, pct: 2.5,  bonus: 500 },
+      { min: 500, max: 549, pct: 3,    bonus: 750 },
+      { min: 550, max: 599, pct: 3.5,  bonus: 750 },
+      { min: 600, max: 649, pct: 4,    bonus: 1000 },
+      { min: 650, max: 699, pct: 4.5,  bonus: 1000 },
+      { min: 700, max: 749, pct: 5,    bonus: 1250 },
+      { min: 750, max: Infinity, pct: 5.5, bonus: 1500 },
+    ];
 
-    function formatCurrency(value) {
-      return 'R$ ' + value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    }
-
-    function formatCurrencyInt(value) {
-      return 'R$ ' + value.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-    }
-
-    function calcularComissaoEscalonada(vendasPorFuncionario, faturamentoPorFuncionario) {
-      let percentual = 0;
-      let bonus = 0;
-      
-      if (vendasPorFuncionario < 300) { percentual = 0; bonus = 0; }
-      else if (vendasPorFuncionario < 350) { percentual = 1; bonus = 250; }
-      else if (vendasPorFuncionario < 400) { percentual = 1.5; bonus = 250; }
-      else if (vendasPorFuncionario < 450) { percentual = 2; bonus = 500; }
-      else if (vendasPorFuncionario < 500) { percentual = 2.5; bonus = 500; }
-      else if (vendasPorFuncionario < 550) { percentual = 3; bonus = 750; }
-      else if (vendasPorFuncionario < 600) { percentual = 3.5; bonus = 750; }
-      else if (vendasPorFuncionario < 650) { percentual = 4; bonus = 1000; }
-      else if (vendasPorFuncionario < 700) { percentual = 4.5; bonus = 1000; }
-      else if (vendasPorFuncionario < 750) { percentual = 5; bonus = 1250; }
-      else { percentual = 5.5; bonus = 1500; }
-      
-      const comissao = faturamentoPorFuncionario * (percentual / 100);
-      return { percentual, bonus, comissao };
+    function getFaixaComissao(vendasFunc) {
+      for (let f of COMISSAO_FAIXAS) {
+        if (vendasFunc >= f.min && vendasFunc <= f.max) return f;
+      }
+      return COMISSAO_FAIXAS[COMISSAO_FAIXAS.length - 1];
     }
 
     function calcularSimplesNacional(faturamentoAnual) {
-      if (faturamentoAnual <= 180000) return { aliquota: 0.04, faixa: 'Até R$ 180k' };
-      if (faturamentoAnual <= 360000) return { aliquota: 0.055, faixa: 'R$ 180k–360k' };
-      if (faturamentoAnual <= 720000) return { aliquota: 0.076, faixa: 'R$ 360k–720k' };
-      if (faturamentoAnual <= 1800000) return { aliquota: 0.082, faixa: 'R$ 720k–1.8M' };
-      if (faturamentoAnual <= 3600000) return { aliquota: 0.095, faixa: 'R$ 1.8M–3.6M' };
-      return { aliquota: 0.11, faixa: 'Acima de R$ 3.6M' };
+      if (faturamentoAnual <= 180000) return { aliquota: 0.04, faixa: 'Até R$ 180k anual' };
+      if (faturamentoAnual <= 360000) return { aliquota: 0.055, faixa: 'R$ 180k – R$ 360k anual' };
+      if (faturamentoAnual <= 720000) return { aliquota: 0.076, faixa: 'R$ 360k – R$ 720k anual' };
+      if (faturamentoAnual <= 1800000) return { aliquota: 0.082, faixa: 'R$ 720k – R$ 1.8M anual' };
+      if (faturamentoAnual <= 3600000) return { aliquota: 0.095, faixa: 'R$ 1.8M – R$ 3.6M anual' };
+      return { aliquota: 0.11, faixa: 'Acima de R$ 3.6M anual' };
     }
 
-    function atualizarTabelaComissoes(vendasFunc) {
-      const rows = document.querySelectorAll('#tabelaComissoes tbody tr');
-      rows.forEach(row => {
-        const min = parseInt(row.dataset.min);
-        const max = parseInt(row.dataset.max);
-        if (vendasFunc >= min && vendasFunc <= max) {
-          row.classList.add('active');
-        } else {
-          row.classList.remove('active');
-        }
-      });
+    function formatCurrency(v) {
+      return 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    }
+    function formatCurrencyDec(v) {
+      return 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
+    // ── Funcionários ──
+    let funcionarios = [
+      { id: 1, nome: 'Funcionário 1', salarioFixo: 2000 },
+      { id: 2, nome: 'Funcionário 2', salarioFixo: 2000 },
+    ];
+    let nextFuncId = 3;
+
+    function addFuncionario() {
+      funcionarios.push({ id: nextFuncId, nome: 'Funcionário ' + nextFuncId, salarioFixo: 2000 });
+      nextFuncId++;
+      renderFuncionarios();
+      calcular();
+    }
+
+    function removeFuncionario(id) {
+      if (funcionarios.length <= 1) return;
+      funcionarios = funcionarios.filter(f => f.id !== id);
+      renderFuncionarios();
+      calcular();
+    }
+
+    function updateSalario(id, valor) {
+      const func = funcionarios.find(f => f.id === id);
+      if (func) func.salarioFixo = parseFloat(valor) || 0;
+      calcular();
+    }
+
+    function renderFuncionarios() {
+      const container = document.getElementById('funcContainer');
+      const precoVenda = parseFloat(document.getElementById('precoVenda').value) || 0;
+      const capasPerDay = parseFloat(document.getElementById('capasPerDay').value) || 0;
+      const capasMes = capasPerDay * 30;
+      const numFunc = funcionarios.length;
+      const vendasPorFunc = numFunc > 0 ? Math.floor(capasMes / numFunc) : 0;
+      const faixa = getFaixaComissao(vendasPorFunc);
+
+      container.innerHTML = funcionarios.map((func, idx) => {
+        const comissaoValor = vendasPorFunc * precoVenda * (faixa.pct / 100);
+        const salarioTotal = func.salarioFixo + comissaoValor + faixa.bonus;
+        return `
+          <div class="func-card">
+            <div class="func-header">
+              <div class="func-name">👤 ${func.nome}</div>
+              ${funcionarios.length > 1 ? `<button class="func-remove" onclick="removeFuncionario(${func.id})">×</button>` : ''}
+            </div>
+            <div class="input-group">
+              <div class="input-label">💵 Salário Fixo</div>
+              <div class="input-wrap has-prefix">
+                <span class="input-prefix">R$</span>
+                <input type="number" value="${func.salarioFixo}" step="100" min="0" oninput="updateSalario(${func.id}, this.value)">
+              </div>
+            </div>
+            <div class="func-stats">
+              <div class="func-stat">
+                <div class="func-stat-label">Vendas Atrib.</div>
+                <div class="func-stat-value">${vendasPorFunc} capas</div>
+              </div>
+              <div class="func-stat">
+                <div class="func-stat-label">Faixa</div>
+                <div class="func-stat-value" style="color:var(--gold);">${faixa.pct}%</div>
+              </div>
+              <div class="func-stat">
+                <div class="func-stat-label">Comissão</div>
+                <div class="func-stat-value" style="color:var(--green);">+ ${formatCurrency(comissaoValor)}</div>
+              </div>
+              <div class="func-stat">
+                <div class="func-stat-label">Bônus</div>
+                <div class="func-stat-value" style="color:var(--cyan);">+ ${formatCurrency(faixa.bonus)}</div>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding:8px 10px;background:var(--bg-card);border-radius:8px;">
+              <span style="font-size:11px;color:var(--text-muted);font-weight:600;">SALÁRIO TOTAL</span>
+              <span style="font-size:15px;font-weight:800;color:var(--text-primary);">${formatCurrency(salarioTotal)}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ── Comissão Table Render ──
+    function renderComissaoTable(vendasPorFunc) {
+      const tbody = document.querySelector('#comissaoTable tbody');
+      tbody.innerHTML = COMISSAO_FAIXAS.map(f => {
+        const isActive = vendasPorFunc >= f.min && vendasPorFunc <= f.max;
+        const label = f.max === Infinity ? `${f.min}+` : `${f.min}–${f.max}`;
+        return `<tr class="${isActive ? 'active-row' : ''}">
+          <td>${label}</td>
+          <td>${f.pct}%</td>
+          <td>${formatCurrency(f.bonus)}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    // ── Meta Banner Update ──
+    function updateMetaBanner(capasPerDay) {
+      document.getElementById('metaSobrevivencia').classList.remove('active');
+      document.getElementById('metaBase').classList.remove('active');
+      document.getElementById('metaMeta').classList.remove('active');
+      document.getElementById('metaStretch').classList.remove('active');
+
+      if (capasPerDay >= 40) {
+        document.getElementById('metaStretch').classList.add('active');
+      } else if (capasPerDay >= 25) {
+        document.getElementById('metaMeta').classList.add('active');
+      } else if (capasPerDay >= 15) {
+        document.getElementById('metaBase').classList.add('active');
+      } else {
+        document.getElementById('metaSobrevivencia').classList.add('active');
+      }
+    }
+
+    // ── Main Calculation ──
     function calcular() {
       const precoVenda = parseFloat(document.getElementById('precoVenda').value) || 0;
       const capasPerDay = parseFloat(document.getElementById('capasPerDay').value) || 0;
       const custoCapinha = parseFloat(document.getElementById('custoCapinha').value) || 0;
       const custoTinta = parseFloat(document.getElementById('custoTinta').value) || 0;
       const custoManutencao = parseFloat(document.getElementById('custoManutencao').value) || 0;
-      const salarioFixo = parseFloat(document.getElementById('salarioFixo').value) || 0;
+      const custoEmbalagem = parseFloat(document.getElementById('custoEmbalagem').value) || 0;
       const aluguel = parseFloat(document.getElementById('aluguel').value) || 0;
-      const energia = parseFloat(document.getElementById('energia').value) || 0;
+      const energiaVal = parseFloat(document.getElementById('energia').value) || 0;
       const sistema = parseFloat(document.getElementById('sistema').value) || 0;
       const contabilidade = parseFloat(document.getElementById('contabilidade').value) || 0;
-      const trafego = parseFloat(document.getElementById('trafego').value) || 0;
+      const trafegoVal = parseFloat(document.getElementById('trafego').value) || 0;
       const agencia = parseFloat(document.getElementById('agencia').value) || 0;
       const capexMaquina = parseFloat(document.getElementById('capexMaquina').value) || 0;
       const capexEstrutura = parseFloat(document.getElementById('capexEstrutura').value) || 0;
       const estoqueInicial = parseFloat(document.getElementById('estoqueInicial').value) || 0;
       const capexComunicacao = parseFloat(document.getElementById('capexComunicacao').value) || 0;
       const taxaJuros = parseFloat(document.getElementById('taxaJuros').value) || 0;
-      const vidaUtilMaquina = parseFloat(document.getElementById('vidaUtilMaquina').value) || 60;
-      const vidaUtilEstrutura = parseFloat(document.getElementById('vidaUtilEstrutura').value) || 60;
+      const vidaUtilMaquina = parseFloat(document.getElementById('vidaUtilMaquina').value) || 1;
+      const vidaUtilEstrutura = parseFloat(document.getElementById('vidaUtilEstrutura').value) || 1;
 
+      // Vendas
       const capasMes = capasPerDay * 30;
       const receitaBruta = capasMes * precoVenda;
       const faturamentoAnual = receitaBruta * 12;
 
-      const vendasPorFuncionario = Math.floor(capasMes / numFuncionarios);
-      const faturamentoPorFuncionario = vendasPorFuncionario * precoVenda;
-
-      const comissaoInfo = calcularComissaoEscalonada(vendasPorFuncionario, faturamentoPorFuncionario);
-      const salarioTotalFuncionario = salarioFixo + comissaoInfo.comissao + comissaoInfo.bonus;
-      const custoTotalFuncionarios = salarioTotalFuncionario * numFuncionarios;
-
+      // CAPEX
       const capexEstoque = estoqueInicial * custoCapinha;
       const capexTotalVal = capexMaquina + capexEstrutura + capexEstoque + capexComunicacao;
 
+      // Depreciação & Juros
       const depMaquina = capexMaquina / vidaUtilMaquina;
       const depEstrutura = capexEstrutura / vidaUtilEstrutura;
       const depreciacaoTotal = depMaquina + depEstrutura;
-      const jurosAnuais = capexTotalVal * (taxaJuros / 100);
-      const jurosMensais = jurosAnuais / 12;
+      const jurosMensais = (capexTotalVal * (taxaJuros / 100)) / 12;
 
+      // Impostos
       const simples = calcularSimplesNacional(faturamentoAnual);
       const impostos = receitaBruta * simples.aliquota;
       const receitaLiquida = receitaBruta - impostos;
 
-      const custoVariavelUnit = custoCapinha + custoTinta + custoManutencao;
+      // Custos Variáveis (sem comissão — comissão está na equipe)
+      const custoVariavelUnit = custoCapinha + custoTinta + custoManutencao + custoEmbalagem;
       const custosVariaveisMes = capasMes * custoVariavelUnit;
 
+      // Margem de Contribuição
       const margemContribuicao = receitaLiquida - custosVariaveisMes;
 
-      const custosFixosOperacionais = aluguel + energia + sistema + contabilidade + trafego + agencia;
-      const custosFixos = custosFixosOperacionais + custoTotalFuncionarios;
+      // Custos Fixos (sem equipe)
+      const custosFixosSemEquipe = aluguel + energiaVal + sistema + contabilidade + trafegoVal + agencia;
 
-      const ebitda = margemContribuicao - custosFixos;
-      const ebit = ebitda - depreciacaoTotal;
-      const lucroLiquido = ebit - jurosMensais;
+      // Equipe — calcular custo total
+      const numFunc = funcionarios.length;
+      const vendasPorFunc = numFunc > 0 ? Math.floor(capasMes / numFunc) : 0;
+      const faixa = getFaixaComissao(vendasPorFunc);
+      let custoEquipeTotal = 0;
+      funcionarios.forEach(func => {
+        const comissaoFunc = vendasPorFunc * precoVenda * (faixa.pct / 100);
+        custoEquipeTotal += func.salarioFixo + comissaoFunc + faixa.bonus;
+      });
+
+      // EBITDA
+      const ebitda = margemContribuicao - custosFixosSemEquipe - custoEquipeTotal;
+      const lucroLiquido = ebitda - depreciacaoTotal - jurosMensais;
 
       const margemEbitda = receitaBruta > 0 ? (ebitda / receitaBruta) * 100 : 0;
       const margemLiquida = receitaBruta > 0 ? (lucroLiquido / receitaBruta) * 100 : 0;
 
-      const margemContribuicaoUnit = precoVenda - custoVariavelUnit - (precoVenda * simples.aliquota);
-      const custosTotaisMes = custosFixos + depreciacaoTotal + jurosMensais;
-      const breakEvenCapasVal = margemContribuicaoUnit > 0 ? Math.ceil(custosTotaisMes / margemContribuicaoUnit) : 0;
-      const breakEvenDiaVal = Math.ceil(breakEvenCapasVal / 30);
-      const breakEvenFaturamentoVal = breakEvenCapasVal * precoVenda;
+      // Break-even
+      const margemContribuicaoUnit = precoVenda > 0 ? precoVenda - custoVariavelUnit - (precoVenda * simples.aliquota) : 0;
+      const custosTotaisFixos = custosFixosSemEquipe + custoEquipeTotal + depreciacaoTotal + jurosMensais;
+      const breakEvenCapas = margemContribuicaoUnit > 0 ? Math.ceil(custosTotaisFixos / margemContribuicaoUnit) : 0;
+      const breakEvenDia = Math.ceil(breakEvenCapas / 30);
+      const breakEvenFaturamento = breakEvenCapas * precoVenda;
 
+      // Payback & ROI
       const paybackMeses = lucroLiquido > 0 ? capexTotalVal / lucroLiquido : Infinity;
       const roiMensalVal = capexTotalVal > 0 ? (lucroLiquido / capexTotalVal) * 100 : 0;
       const roiAnualVal = roiMensalVal * 12;
 
-      const diferencaBreakeven = capasMes - breakEvenCapasVal;
       const isLucrativo = lucroLiquido > 0;
+      const diferencaBreakeven = capasMes - breakEvenCapas;
 
+      // ── Update DOM ──
+
+      // Meta Banner
+      updateMetaBanner(capasPerDay);
+
+      // Vendas
       document.getElementById('vendasMes').textContent = capasMes;
-      document.getElementById('vendasFunc').textContent = vendasPorFuncionario;
-      document.getElementById('faturamentoBruto').textContent = formatCurrencyInt(receitaBruta);
+      document.getElementById('faturamentoBruto').textContent = formatCurrency(receitaBruta);
 
-      document.getElementById('vendasAtribuidas').textContent = vendasPorFuncionario + ' capas';
-      document.getElementById('faixaComissao').textContent = comissaoInfo.percentual + '%';
-      document.getElementById('salarioFixoDisplay').textContent = formatCurrency(salarioFixo);
-      document.getElementById('comissaoValor').textContent = '+ ' + formatCurrency(comissaoInfo.comissao);
-      document.getElementById('bonusValor').textContent = '+ ' + formatCurrency(comissaoInfo.bonus);
-      document.getElementById('salarioTotal').textContent = formatCurrency(salarioTotalFuncionario);
-      document.getElementById('custoEquipe').textContent = formatCurrency(custoTotalFuncionarios);
+      // Render funcionários
+      renderFuncionarios();
 
-      document.getElementById('custoVarUnit').textContent = formatCurrency(custoVariavelUnit);
+      // Custo variável
+      document.getElementById('custoVarUnit').textContent = formatCurrencyDec(custoVariavelUnit);
 
-      document.getElementById('custosFixosSemEquipe').textContent = formatCurrencyInt(custosFixosOperacionais);
-      document.getElementById('custoEquipeResumo').textContent = formatCurrencyInt(custoTotalFuncionarios);
-      document.getElementById('custosFixosTotal').textContent = formatCurrencyInt(custosFixos);
+      // Custos fixos resumo
+      document.getElementById('custosFixosSemEquipe').textContent = formatCurrency(custosFixosSemEquipe);
+      document.getElementById('custosEquipeResumo').textContent = formatCurrency(custoEquipeTotal);
+      document.getElementById('custosFixosTotal').textContent = formatCurrency(custosFixosSemEquipe + custoEquipeTotal);
 
+      // Equipe total
+      document.getElementById('custoEquipeValor').textContent = formatCurrency(custoEquipeTotal);
+
+      // CAPEX
       document.getElementById('depreciacaoMes').textContent = formatCurrency(depreciacaoTotal);
       document.getElementById('jurosMes').textContent = formatCurrency(jurosMensais);
-      document.getElementById('capexTotal').textContent = formatCurrencyInt(capexTotalVal);
+      document.getElementById('capexTotal').textContent = formatCurrency(capexTotalVal);
 
-      atualizarTabelaComissoes(vendasPorFuncionario);
+      // Comissão table
+      renderComissaoTable(vendasPorFunc);
 
-      document.getElementById('breakEvenCapas').textContent = breakEvenCapasVal;
-      document.getElementById('breakEvenDia').textContent = '~' + breakEvenDiaVal;
-      document.getElementById('breakEvenFaturamento').textContent = formatCurrencyInt(breakEvenFaturamentoVal);
+      // Break-even
+      document.getElementById('beCapas').textContent = breakEvenCapas;
+      document.getElementById('beDia').textContent = '~' + breakEvenDia;
+      document.getElementById('beFaturamento').textContent = formatCurrency(breakEvenFaturamento);
 
-      document.getElementById('statusBadge').className = 'status-badge ' + (isLucrativo ? 'profit' : 'loss');
-      document.getElementById('statusBadge').textContent = isLucrativo ? '✓ Operação Lucrativa' : '✗ Operação com Prejuízo';
-      document.getElementById('statusDiff').className = 'status-diff ' + (isLucrativo ? 'green' : 'red');
-      document.getElementById('statusDiff').textContent = (isLucrativo ? '+' : '') + diferencaBreakeven + ' capas ' + (isLucrativo ? 'acima' : 'abaixo') + ' do break-even';
+      // Status
+      const statusBadge = document.getElementById('statusBadge');
+      statusBadge.className = 'status-badge ' + (isLucrativo ? 'status-lucrativo' : 'status-prejuizo');
+      document.getElementById('statusIcon').textContent = isLucrativo ? '✓' : '✕';
+      document.getElementById('statusText').textContent = isLucrativo ? 'Operação Lucrativa' : 'Operação com Prejuízo';
+      const diffEl = document.getElementById('statusDiff');
+      diffEl.textContent = (isLucrativo ? '+' : '') + diferencaBreakeven + ' capas ' + (isLucrativo ? 'acima' : 'abaixo') + ' do break-even';
+      diffEl.style.color = isLucrativo ? 'var(--green)' : 'var(--red)';
 
-      document.getElementById('ebitdaCard').textContent = formatCurrencyInt(ebitda);
-      document.getElementById('ebitdaPercent').textContent = margemEbitda.toFixed(1) + '%';
-      document.getElementById('lucroCard').textContent = formatCurrencyInt(lucroLiquido);
-      document.getElementById('lucroCard').className = 'result-value ' + (isLucrativo ? 'green' : 'red');
-      document.getElementById('lucroCardContainer').className = 'result-card ' + (isLucrativo ? 'lucro-pos' : 'lucro-neg');
-      document.getElementById('lucroPercent').textContent = margemLiquida.toFixed(1) + '%';
+      // Resultado Financeiro
+      document.getElementById('ebitdaValor').textContent = formatCurrency(ebitda);
+      document.getElementById('ebitdaPct').textContent = margemEbitda.toFixed(1) + '%';
+      document.getElementById('lucroValor').textContent = formatCurrency(lucroLiquido);
+      document.getElementById('lucroPct').textContent = margemLiquida.toFixed(1) + '%';
 
-      document.getElementById('dreReceitaBruta').innerHTML = '<strong>' + formatCurrencyInt(receitaBruta) + '</strong>';
-      document.getElementById('dreImpostos').textContent = '- ' + formatCurrencyInt(impostos);
-      document.getElementById('dreCustosVar').textContent = '- ' + formatCurrencyInt(custosVariaveisMes);
-      document.getElementById('dreMargem').innerHTML = '<strong>' + formatCurrencyInt(margemContribuicao) + '</strong>';
-      document.getElementById('dreCustosFixos').textContent = '- ' + formatCurrencyInt(custosFixosOperacionais);
-      document.getElementById('dreEquipe').textContent = '- ' + formatCurrencyInt(custoTotalFuncionarios);
-      document.getElementById('dreEbitda').innerHTML = '<strong>' + formatCurrencyInt(ebitda) + '</strong>';
-      document.getElementById('dreDAJuros').textContent = '- ' + formatCurrencyInt(depreciacaoTotal + jurosMensais);
-      document.getElementById('dreLucro').innerHTML = '<strong>' + formatCurrencyInt(lucroLiquido) + '</strong>';
-      document.getElementById('dreLucroRow').className = 'dre-row ' + (isLucrativo ? 'highlight-green' : 'highlight-red');
-      document.getElementById('dreLucro').className = isLucrativo ? 'green' : 'red';
-      document.getElementById('dreLucroLabel').className = isLucrativo ? 'green' : 'red';
+      const lucroBox = document.getElementById('lucroBox');
+      const lucroLabel = document.getElementById('lucroLabel');
+      const lucroValorEl = document.getElementById('lucroValor');
+      const lucroPctEl = document.getElementById('lucroPct');
+      if (isLucrativo) {
+        lucroBox.style.background = 'var(--green-soft)';
+        lucroBox.style.borderColor = 'rgba(45,212,122,0.2)';
+        lucroLabel.style.color = lucroValorEl.style.color = lucroPctEl.style.color = 'var(--green)';
+      } else {
+        lucroBox.style.background = 'var(--red-soft)';
+        lucroBox.style.borderColor = 'rgba(239,75,75,0.2)';
+        lucroLabel.style.color = lucroValorEl.style.color = lucroPctEl.style.color = 'var(--red)';
+      }
 
-      document.getElementById('capexTotalCard').textContent = formatCurrencyInt(capexTotalVal);
-      document.getElementById('paybackCard').textContent = paybackMeses === Infinity || lucroLiquido <= 0 ? '∞' : '~' + paybackMeses.toFixed(1) + 'm';
+      document.getElementById('diffEbitdaLucro').textContent =
+        formatCurrency(ebitda - lucroLiquido) + ' deduzidos: Depreciação (' + formatCurrency(depreciacaoTotal) + ') + Juros (' + formatCurrency(jurosMensais) + ')';
+
+      document.getElementById('simplesAliquota').textContent = (simples.aliquota * 100).toFixed(1) + '%';
+      document.getElementById('simplesFaixa').textContent = simples.faixa;
+
+      // DRE
+      document.getElementById('dreReceita').textContent = formatCurrency(receitaBruta);
+      document.getElementById('dreImpostos').textContent = '- ' + formatCurrency(impostos);
+      document.getElementById('dreCustosVar').textContent = '- ' + formatCurrency(custosVariaveisMes);
+      document.getElementById('dreMargem').textContent = formatCurrency(margemContribuicao);
+      document.getElementById('dreCustosFixos').textContent = '- ' + formatCurrency(custosFixosSemEquipe);
+      document.getElementById('dreEquipe').textContent = '- ' + formatCurrency(custoEquipeTotal);
+      document.getElementById('dreEbitda').textContent = formatCurrency(ebitda);
+      document.getElementById('dreDA').textContent = '- ' + formatCurrency(depreciacaoTotal + jurosMensais);
+      document.getElementById('dreLucroValor').textContent = formatCurrency(lucroLiquido);
+
+      const dreLucroRow = document.getElementById('dreLucroRow');
+      const dreLucroLabel = document.getElementById('dreLucroLabel');
+      const dreLucroVal = document.getElementById('dreLucroValor');
+      if (isLucrativo) {
+        dreLucroRow.style.background = 'var(--green-soft)';
+        dreLucroLabel.style.color = dreLucroVal.style.color = 'var(--green)';
+      } else {
+        dreLucroRow.style.background = 'var(--red-soft)';
+        dreLucroLabel.style.color = dreLucroVal.style.color = 'var(--red)';
+      }
+
+      // ROI & Payback
+      document.getElementById('roiCapex').textContent = formatCurrency(capexTotalVal);
+      document.getElementById('roiPayback').textContent = paybackMeses === Infinity || lucroLiquido <= 0 ? '∞' : '~' + paybackMeses.toFixed(1) + 'm';
       document.getElementById('roiMensal').textContent = roiMensalVal.toFixed(1) + '%';
       document.getElementById('roiAnual').textContent = roiAnualVal.toFixed(0) + '%';
+
+      // Progress
+      document.getElementById('progressLabel').textContent = roiMensalVal.toFixed(1) + '% / mês';
+      const fillEl = document.getElementById('progressFill');
+      fillEl.style.width = Math.min(roiMensalVal, 100) + '%';
+      fillEl.style.background = roiMensalVal >= 15 ? 'var(--green)' : roiMensalVal >= 8 ? 'var(--gold)' : 'var(--red)';
     }
 
-    document.addEventListener('DOMContentLoaded', calcular);
+    // ── Init ──
+    document.addEventListener('DOMContentLoaded', function() {
+      renderFuncionarios();
+      calcular();
+    });
   </script>
 </body>
 </html>
