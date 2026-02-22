@@ -575,7 +575,15 @@
             <div class="card-icon" style="background:var(--purple-soft);">👥</div>
             <div>
               <div class="card-title">Equipe & Comissão</div>
-              <div class="card-subtitle">Adicione funcionários e defina salários</div>
+              <div class="card-subtitle">Salário fixo + comissão por unidade vendida</div>
+            </div>
+          </div>
+          <div class="input-group" style="margin-bottom:16px;">
+            <div class="input-label">💵 Comissão por Case Vendido (todos os funcionários)</div>
+            <div class="input-wrap has-prefix has-suffix">
+              <span class="input-prefix">R$</span>
+              <input type="number" id="comissaoUnitaria" value="3.00" step="0.50" min="0" oninput="calcular()">
+              <span class="input-suffix">/un</span>
             </div>
           </div>
           <div id="funcContainer"></div>
@@ -786,21 +794,33 @@
           </div>
         </div>
 
-        <!-- Tabela Comissões -->
+        <!-- Referência Comissão -->
         <div class="card">
           <div class="card-header">
             <div class="card-icon" style="background:var(--gold-soft);">📈</div>
             <div>
-              <div class="card-title">Tabela de Comissões</div>
-              <div class="card-subtitle">Por funcionário (vendas atribuídas)</div>
+              <div class="card-title">Resumo da Comissão</div>
+              <div class="card-subtitle">Modelo: valor fixo por unidade vendida</div>
             </div>
           </div>
-          <table class="comissao-table" id="comissaoTable">
-            <thead>
-              <tr><th>Vendas</th><th>%</th><th>Bônus</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--bg-input);border-radius:10px;">
+              <span style="font-size:12px;color:var(--text-secondary);">Comissão / case</span>
+              <span style="font-size:14px;font-weight:700;color:var(--gold);" id="resumoComissaoUnit">R$ 3,00</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--bg-input);border-radius:10px;">
+              <span style="font-size:12px;color:var(--text-secondary);">Vendas / funcionário</span>
+              <span style="font-size:14px;font-weight:700;" id="resumoVendasFunc">375 capas</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--bg-input);border-radius:10px;">
+              <span style="font-size:12px;color:var(--text-secondary);">Comissão / funcionário</span>
+              <span style="font-size:14px;font-weight:700;color:var(--green);" id="resumoComissaoFunc">R$ 1.125</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--gold-soft);border:1px solid rgba(201,151,59,0.2);border-radius:10px;">
+              <span style="font-size:12px;font-weight:600;color:var(--gold);">Comissão total equipe</span>
+              <span style="font-size:14px;font-weight:800;color:var(--gold);" id="resumoComissaoTotal">R$ 2.250</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -947,33 +967,11 @@
     <!-- Footer -->
     <div class="footer">
       <strong>MEMO CASE</strong> — Simulador Financeiro v7.0 Equipe Flexível<br>
-      Equipe dinâmica • Comissão escalonada • Faixas de meta • Embalagem incluída
+      Equipe dinâmica • Comissão fixa por unidade • Faixas de meta • Embalagem incluída
     </div>
   </div>
 
   <script>
-    // ── Tabela de Comissão (por funcionário) ──
-    const COMISSAO_FAIXAS = [
-      { min: 0,   max: 299, pct: 0,    bonus: 0 },
-      { min: 300, max: 349, pct: 1,    bonus: 250 },
-      { min: 350, max: 399, pct: 1.5,  bonus: 250 },
-      { min: 400, max: 449, pct: 2,    bonus: 500 },
-      { min: 450, max: 499, pct: 2.5,  bonus: 500 },
-      { min: 500, max: 549, pct: 3,    bonus: 750 },
-      { min: 550, max: 599, pct: 3.5,  bonus: 750 },
-      { min: 600, max: 649, pct: 4,    bonus: 1000 },
-      { min: 650, max: 699, pct: 4.5,  bonus: 1000 },
-      { min: 700, max: 749, pct: 5,    bonus: 1250 },
-      { min: 750, max: Infinity, pct: 5.5, bonus: 1500 },
-    ];
-
-    function getFaixaComissao(vendasFunc) {
-      for (let f of COMISSAO_FAIXAS) {
-        if (vendasFunc >= f.min && vendasFunc <= f.max) return f;
-      }
-      return COMISSAO_FAIXAS[COMISSAO_FAIXAS.length - 1];
-    }
-
     function calcularSimplesNacional(faturamentoAnual) {
       if (faturamentoAnual <= 180000) return { aliquota: 0.04, faixa: 'Até R$ 180k anual' };
       if (faturamentoAnual <= 360000) return { aliquota: 0.055, faixa: 'R$ 180k – R$ 360k anual' };
@@ -997,7 +995,6 @@
     ];
     let nextFuncId = 3;
 
-    // Renumera os nomes para sempre mostrar 1, 2, 3... na ordem real
     function getNomeFunc(idx) {
       return 'Funcionário ' + (idx + 1);
     }
@@ -1020,41 +1017,41 @@
       const func = funcionarios.find(f => f.id === id);
       if (func) {
         func.salarioFixo = parseFloat(valor) || 0;
-        // NÃO recria o HTML — apenas recalcula os números
         atualizarStatsFuncionarios();
         calcular();
       }
     }
 
-    // Calcula e retorna dados de cada funcionário
+    // Calcula dados da equipe com comissão fixa por unidade
     function calcularDadosEquipe() {
-      const precoVenda = parseFloat(document.getElementById('precoVenda').value) || 0;
       const capasPerDay = parseFloat(document.getElementById('capasPerDay').value) || 0;
+      const comissaoUnitaria = parseFloat(document.getElementById('comissaoUnitaria').value) || 0;
       const capasMes = capasPerDay * 30;
       const numFunc = funcionarios.length;
       const vendasPorFunc = numFunc > 0 ? Math.floor(capasMes / numFunc) : 0;
-      const faixa = getFaixaComissao(vendasPorFunc);
 
       let custoTotal = 0;
       const dados = funcionarios.map((func, idx) => {
-        const comissaoValor = vendasPorFunc * precoVenda * (faixa.pct / 100);
-        const salarioTotal = func.salarioFixo + comissaoValor + faixa.bonus;
+        const comissaoValor = vendasPorFunc * comissaoUnitaria;
+        const salarioTotal = func.salarioFixo + comissaoValor;
         custoTotal += salarioTotal;
         return {
           id: func.id,
           nome: getNomeFunc(idx),
           salarioFixo: func.salarioFixo,
           vendasPorFunc,
-          faixa,
+          comissaoUnitaria,
           comissaoValor,
           salarioTotal
         };
       });
 
-      return { dados, custoTotal, vendasPorFunc, faixa };
+      const comissaoTotalEquipe = numFunc > 0 ? vendasPorFunc * comissaoUnitaria * numFunc : 0;
+
+      return { dados, custoTotal, vendasPorFunc, comissaoUnitaria, comissaoTotalEquipe };
     }
 
-    // Atualiza apenas os textos dos stats dos funcionários SEM recriar inputs
+    // Atualiza stats sem recriar inputs
     function atualizarStatsFuncionarios() {
       const equipe = calcularDadosEquipe();
 
@@ -1067,33 +1064,21 @@
               <div class="func-stat-value">${d.vendasPorFunc} capas</div>
             </div>
             <div class="func-stat">
-              <div class="func-stat-label">Faixa</div>
-              <div class="func-stat-value" style="color:var(--gold);">${d.faixa.pct}%</div>
-            </div>
-            <div class="func-stat">
               <div class="func-stat-label">Comissão</div>
               <div class="func-stat-value" style="color:var(--green);">+ ${formatCurrency(d.comissaoValor)}</div>
-            </div>
-            <div class="func-stat">
-              <div class="func-stat-label">Bônus</div>
-              <div class="func-stat-value" style="color:var(--cyan);">+ ${formatCurrency(d.faixa.bonus)}</div>
             </div>
           `;
         }
         const totalEl = document.getElementById('func-total-' + d.id);
-        if (totalEl) {
-          totalEl.textContent = formatCurrency(d.salarioTotal);
-        }
+        if (totalEl) totalEl.textContent = formatCurrency(d.salarioTotal);
         const nomeEl = document.getElementById('func-nome-' + d.id);
-        if (nomeEl) {
-          nomeEl.textContent = '👤 ' + d.nome;
-        }
+        if (nomeEl) nomeEl.textContent = '👤 ' + d.nome;
       });
 
       document.getElementById('custoEquipeValor').textContent = formatCurrency(equipe.custoTotal);
     }
 
-    // Recria o HTML completo dos funcionários (só chamado ao adicionar/remover)
+    // Recria HTML completo (só ao adicionar/remover)
     function renderFuncionarios() {
       const container = document.getElementById('funcContainer');
       const equipe = calcularDadosEquipe();
@@ -1112,22 +1097,14 @@
                 <input type="number" id="func-salario-${d.id}" value="${d.salarioFixo}" step="100" min="0" oninput="updateSalario(${d.id}, this.value)">
               </div>
             </div>
-            <div class="func-stats" id="func-stats-${d.id}">
+            <div class="func-stats" id="func-stats-${d.id}" style="grid-template-columns:1fr 1fr;">
               <div class="func-stat">
                 <div class="func-stat-label">Vendas Atrib.</div>
                 <div class="func-stat-value">${d.vendasPorFunc} capas</div>
               </div>
               <div class="func-stat">
-                <div class="func-stat-label">Faixa</div>
-                <div class="func-stat-value" style="color:var(--gold);">${d.faixa.pct}%</div>
-              </div>
-              <div class="func-stat">
                 <div class="func-stat-label">Comissão</div>
                 <div class="func-stat-value" style="color:var(--green);">+ ${formatCurrency(d.comissaoValor)}</div>
-              </div>
-              <div class="func-stat">
-                <div class="func-stat-label">Bônus</div>
-                <div class="func-stat-value" style="color:var(--cyan);">+ ${formatCurrency(d.faixa.bonus)}</div>
               </div>
             </div>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding:8px 10px;background:var(--bg-card);border-radius:8px;">
@@ -1139,20 +1116,6 @@
       }).join('');
 
       document.getElementById('custoEquipeValor').textContent = formatCurrency(equipe.custoTotal);
-    }
-
-    // ── Comissão Table Render ──
-    function renderComissaoTable(vendasPorFunc) {
-      const tbody = document.querySelector('#comissaoTable tbody');
-      tbody.innerHTML = COMISSAO_FAIXAS.map(f => {
-        const isActive = vendasPorFunc >= f.min && vendasPorFunc <= f.max;
-        const label = f.max === Infinity ? `${f.min}+` : `${f.min}–${f.max}`;
-        return `<tr class="${isActive ? 'active-row' : ''}">
-          <td>${label}</td>
-          <td>${f.pct}%</td>
-          <td>${formatCurrency(f.bonus)}</td>
-        </tr>`;
-      }).join('');
     }
 
     // ── Meta Banner Update ──
@@ -1225,13 +1188,20 @@
       // Custos Fixos (sem equipe)
       const custosFixosSemEquipe = aluguel + energiaVal + sistema + contabilidade + trafegoVal + agencia;
 
-      // Equipe — usar cálculo centralizado
+      // Equipe
       const equipe = calcularDadosEquipe();
       const custoEquipeTotal = equipe.custoTotal;
       const vendasPorFunc = equipe.vendasPorFunc;
 
-      // Atualizar stats dos funcionários sem recriar HTML
+      // Atualizar stats dos funcionários
       atualizarStatsFuncionarios();
+
+      // Atualizar resumo comissão
+      const comissaoUnitaria = parseFloat(document.getElementById('comissaoUnitaria').value) || 0;
+      document.getElementById('resumoComissaoUnit').textContent = formatCurrencyDec(comissaoUnitaria);
+      document.getElementById('resumoVendasFunc').textContent = vendasPorFunc + ' capas';
+      document.getElementById('resumoComissaoFunc').textContent = formatCurrency(vendasPorFunc * comissaoUnitaria);
+      document.getElementById('resumoComissaoTotal').textContent = formatCurrency(equipe.comissaoTotalEquipe);
 
       // EBITDA
       const ebitda = margemContribuicao - custosFixosSemEquipe - custoEquipeTotal;
@@ -1256,36 +1226,24 @@
       const diferencaBreakeven = capasMes - breakEvenCapas;
 
       // ── Update DOM ──
-
-      // Meta Banner
       updateMetaBanner(capasPerDay);
 
-      // Vendas
       document.getElementById('vendasMes').textContent = capasMes;
       document.getElementById('faturamentoBruto').textContent = formatCurrency(receitaBruta);
-
-      // Custo variável
       document.getElementById('custoVarUnit').textContent = formatCurrencyDec(custoVariavelUnit);
 
-      // Custos fixos resumo
       document.getElementById('custosFixosSemEquipe').textContent = formatCurrency(custosFixosSemEquipe);
       document.getElementById('custosEquipeResumo').textContent = formatCurrency(custoEquipeTotal);
       document.getElementById('custosFixosTotal').textContent = formatCurrency(custosFixosSemEquipe + custoEquipeTotal);
 
-      // CAPEX
       document.getElementById('depreciacaoMes').textContent = formatCurrency(depreciacaoTotal);
       document.getElementById('jurosMes').textContent = formatCurrency(jurosMensais);
       document.getElementById('capexTotal').textContent = formatCurrency(capexTotalVal);
 
-      // Comissão table
-      renderComissaoTable(vendasPorFunc);
-
-      // Break-even
       document.getElementById('beCapas').textContent = breakEvenCapas;
       document.getElementById('beDia').textContent = '~' + breakEvenDia;
       document.getElementById('beFaturamento').textContent = formatCurrency(breakEvenFaturamento);
 
-      // Status
       const statusBadge = document.getElementById('statusBadge');
       statusBadge.className = 'status-badge ' + (isLucrativo ? 'status-lucrativo' : 'status-prejuizo');
       document.getElementById('statusIcon').textContent = isLucrativo ? '✓' : '✕';
@@ -1294,7 +1252,6 @@
       diffEl.textContent = (isLucrativo ? '+' : '') + diferencaBreakeven + ' capas ' + (isLucrativo ? 'acima' : 'abaixo') + ' do break-even';
       diffEl.style.color = isLucrativo ? 'var(--green)' : 'var(--red)';
 
-      // Resultado Financeiro
       document.getElementById('ebitdaValor').textContent = formatCurrency(ebitda);
       document.getElementById('ebitdaPct').textContent = margemEbitda.toFixed(1) + '%';
       document.getElementById('lucroValor').textContent = formatCurrency(lucroLiquido);
@@ -1320,7 +1277,6 @@
       document.getElementById('simplesAliquota').textContent = (simples.aliquota * 100).toFixed(1) + '%';
       document.getElementById('simplesFaixa').textContent = simples.faixa;
 
-      // DRE
       document.getElementById('dreReceita').textContent = formatCurrency(receitaBruta);
       document.getElementById('dreImpostos').textContent = '- ' + formatCurrency(impostos);
       document.getElementById('dreCustosVar').textContent = '- ' + formatCurrency(custosVariaveisMes);
@@ -1342,13 +1298,11 @@
         dreLucroLabel.style.color = dreLucroVal.style.color = 'var(--red)';
       }
 
-      // ROI & Payback
       document.getElementById('roiCapex').textContent = formatCurrency(capexTotalVal);
       document.getElementById('roiPayback').textContent = paybackMeses === Infinity || lucroLiquido <= 0 ? '∞' : '~' + paybackMeses.toFixed(1) + 'm';
       document.getElementById('roiMensal').textContent = roiMensalVal.toFixed(1) + '%';
       document.getElementById('roiAnual').textContent = roiAnualVal.toFixed(0) + '%';
 
-      // Progress
       document.getElementById('progressLabel').textContent = roiMensalVal.toFixed(1) + '% / mês';
       const fillEl = document.getElementById('progressFill');
       fillEl.style.width = Math.min(roiMensalVal, 100) + '%';
